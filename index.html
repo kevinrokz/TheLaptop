@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>THE LAPTOP</title>
+<title>The Laptop — 20 Mission Adventure</title>
 
 <style>
 *{
     box-sizing:border-box;
+    user-select:none;
 }
 
 html,body{
@@ -15,3802 +16,2903 @@ html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    font-family:Segoe UI,Arial,sans-serif;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#07111c;
+    color:#fff;
 }
 
-button,input,textarea{
-    font:inherit;
+canvas{
+    display:block;
 }
 
 button{
-    cursor:pointer;
+    font-family:inherit;
 }
-
-/* ================= INTRO ================= */
-
-#intro,
-#rules{
-    position:fixed;
-    inset:0;
-    z-index:99999;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
-    background:
-        radial-gradient(circle at center,#146a9c,#02070d 72%);
-}
-
-#rules{
-    display:none;
-}
-
-.box{
-    width:min(900px,94vw);
-    max-height:92vh;
-    overflow:auto;
-    padding:35px;
-    border:1px solid #52738e;
-    border-radius:15px;
-    background:#071522f5;
-    box-shadow:0 25px 100px #000;
-}
-
-.logo{
-    text-align:center;
-    font-size:clamp(45px,8vw,85px);
-    font-weight:900;
-    letter-spacing:7px;
-    text-shadow:0 0 35px #19aaff;
-}
-
-.desc{
-    text-align:center;
-    color:#c8dbea;
-    line-height:1.7;
-    font-size:18px;
-}
-
-.primary{
-    display:block;
-    margin:25px auto 0;
-    padding:14px 35px;
-    border:0;
-    border-radius:8px;
-    color:white;
-    background:#087de0;
-    font-weight:bold;
-    font-size:17px;
-}
-
-.primary:hover{
-    background:#199aff;
-}
-
-#rules h1{
-    text-align:center;
-    color:#70d7ff;
-}
-
-.rule{
-    padding:10px 13px;
-    margin:6px 0;
-    border-radius:7px;
-    background:#ffffff0b;
-    line-height:1.45;
-}
-
-/* ================= GAME ================= */
 
 #game{
-    display:none;
     position:fixed;
     inset:0;
 }
 
-/* ================= DESKTOP ================= */
-
-#desktop{
-    position:absolute;
-    inset:0 0 46px 0;
-    background:
-        radial-gradient(circle at 25% 20%,#2c82b7,transparent 32%),
-        linear-gradient(135deg,#061527,#12659e,#07172b);
-    color:white;
+#hud{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:20;
+    pointer-events:none;
 }
 
-/* ================= ICONS ================= */
-
-#icons{
-    position:absolute;
-    top:12px;
-    left:12px;
-    width:90px;
+#topbar{
+    min-height:65px;
+    padding:10px 14px;
     display:flex;
-    flex-direction:column;
-    gap:5px;
+    align-items:center;
+    gap:12px;
+    background:linear-gradient(90deg,#081827eF,#102b3eeF);
+    border-bottom:1px solid #31536a;
 }
 
-.icon{
-    text-align:center;
-    padding:6px;
-    border-radius:7px;
+#missionTitle{
+    flex:1;
 }
 
-.icon:hover{
-    background:#ffffff1d;
-}
-
-.iconEmoji{
-    font-size:31px;
-}
-
-.iconName{
-    font-size:12px;
-    text-shadow:0 2px 4px black;
-}
-
-/* ================= MISSION ================= */
-
-#mission{
-    position:absolute;
-    right:15px;
-    top:15px;
-    width:370px;
-    padding:15px;
-    border:1px solid #526c85;
-    border-radius:10px;
-    background:#07111de8;
-    box-shadow:0 10px 35px #0008;
-}
-
-#mission h3{
-    margin:0 0 8px;
+#missionNumber{
+    font-size:13px;
+    color:#62d8ff;
+    font-weight:bold;
 }
 
 #missionName{
-    color:#71d6ff;
+    font-size:20px;
     font-weight:bold;
+    margin-top:2px;
 }
 
-#missionText{
-    margin-top:6px;
-    color:#d7e5f1;
-    line-height:1.45;
+#batteryBox{
+    width:170px;
 }
 
-.progress{
-    height:7px;
-    margin-top:12px;
-    background:#24384a;
-    border-radius:5px;
+#batteryText{
+    font-size:12px;
+    margin-bottom:5px;
+    text-align:right;
+}
+
+#batteryBar{
+    height:12px;
+    background:#162a38;
+    border:1px solid #3b5d6e;
+    border-radius:20px;
     overflow:hidden;
 }
 
-#progress{
-    width:0%;
+#batteryFill{
     height:100%;
-    background:#29baff;
+    width:100%;
+    background:#45e68a;
+    transition:width .2s;
 }
 
-/* ================= TASKBAR ================= */
+#progressOuter{
+    position:fixed;
+    left:12px;
+    right:12px;
+    top:75px;
+    height:10px;
+    z-index:21;
+    background:#142a39;
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid #254457;
+}
 
-#taskbar{
+#progressInner{
+    height:100%;
+    width:5%;
+    background:#36cfff;
+    transition:width .3s;
+}
+
+#help{
+    position:fixed;
+    left:15px;
+    bottom:15px;
+    z-index:30;
+    padding:10px 13px;
+    background:#081521dd;
+    border:1px solid #355a6e;
+    border-radius:10px;
+    font-size:13px;
+    line-height:1.7;
+}
+
+#notice{
+    position:fixed;
+    left:50%;
+    bottom:90px;
+    transform:translateX(-50%);
+    z-index:100;
+    min-width:280px;
+    max-width:700px;
+    padding:14px 20px;
+    text-align:center;
+    background:#071827f2;
+    border:1px solid #4bbbe3;
+    border-radius:12px;
+    box-shadow:0 10px 40px #0008;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s;
+}
+
+#notice.show{
+    opacity:1;
+}
+
+#crosshair{
+    position:fixed;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    z-index:15;
+    pointer-events:none;
+    font-size:24px;
+    color:#fff;
+    text-shadow:0 0 8px #000;
+}
+
+#interactHint{
+    position:fixed;
+    left:50%;
+    bottom:155px;
+    transform:translateX(-50%);
+    z-index:25;
+    background:#06131de8;
+    border:1px solid #46c7ef;
+    border-radius:10px;
+    padding:9px 16px;
+    opacity:0;
+    transition:.2s;
+}
+
+#interactHint.show{
+    opacity:1;
+}
+
+#rulesScreen,
+#winScreen,
+#pauseScreen{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+        radial-gradient(circle at 50% 30%,#15496a,#02080f 70%);
+}
+
+.panel{
+    width:min(760px,92vw);
+    max-height:90vh;
+    overflow:auto;
+    padding:30px;
+    border:1px solid #3f87a9;
+    border-radius:18px;
+    background:#071521f5;
+    box-shadow:0 20px 100px #000b;
+}
+
+.panel h1{
+    margin-top:0;
+    font-size:42px;
+    color:#6bddff;
+}
+
+.panel h2{
+    color:#8ee6ff;
+}
+
+.rules{
+    line-height:1.7;
+    color:#d4e6ef;
+}
+
+.rules li{
+    margin:8px 0;
+}
+
+.primary{
+    border:0;
+    border-radius:9px;
+    padding:14px 24px;
+    background:#087fe1;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.primary:hover{
+    background:#19a0ff;
+}
+
+.secondary{
+    border:1px solid #47758a;
+    border-radius:9px;
+    padding:11px 18px;
+    background:#102632;
+    color:white;
+    cursor:pointer;
+}
+
+#winScreen{
+    display:none;
+}
+
+.winBox{
+    width:min(650px,90vw);
+    padding:45px;
+    text-align:center;
+    border:1px solid #4d8db2;
+    border-radius:18px;
+    background:#071522f5;
+    box-shadow:0 0 100px #008cff66;
+}
+
+.winIcon{
+    font-size:80px;
+}
+
+.winBox h1{
+    margin:5px 0;
+    font-size:60px;
+    color:#6cddff;
+}
+
+.winBox p{
+    line-height:1.8;
+    color:#c9dbe8;
+}
+
+#pauseScreen{
+    display:none;
+    z-index:900;
+}
+
+#pauseScreen .panel{
+    text-align:center;
+}
+
+#laptopUI{
+    position:fixed;
+    inset:0;
+    z-index:500;
+    display:none;
+    background:#dce5ec;
+    color:#18232e;
+}
+
+.window{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+}
+
+.titlebar{
+    height:48px;
+    display:flex;
+    align-items:center;
+    padding-left:16px;
+    background:#eef3f7;
+    border-bottom:1px solid #aebbc6;
+}
+
+.titlebar .title{
+    flex:1;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.windowButtons{
+    height:100%;
+    display:flex;
+}
+
+.windowButtons button{
+    width:58px;
+    border:0;
+    background:transparent;
+    font-size:17px;
+    cursor:pointer;
+}
+
+.windowButtons button:hover{
+    background:#d4dde5;
+}
+
+.windowButtons .close:hover{
+    background:#d93636;
+    color:#fff;
+}
+
+.osBody{
+    flex:1;
+    display:flex;
+    overflow:hidden;
+}
+
+.sidebar{
+    width:220px;
+    background:#f4f7f9;
+    border-right:1px solid #b7c4ce;
+    padding:12px;
+}
+
+.sidebar button{
+    width:100%;
+    border:0;
+    border-radius:7px;
+    padding:12px;
+    margin-bottom:7px;
+    text-align:left;
+    background:transparent;
+    color:#263542;
+    cursor:pointer;
+}
+
+.sidebar button:hover,
+.sidebar button.active{
+    background:#d9eaf7;
+}
+
+.appContent{
+    flex:1;
+    overflow:auto;
+    padding:30px;
+}
+
+.card{
+    background:#fff;
+    border-radius:13px;
+    padding:22px;
+    margin-bottom:18px;
+    box-shadow:0 3px 12px #0001;
+}
+
+.card h2{
+    margin-top:0;
+}
+
+.blueButton{
+    border:0;
+    padding:13px 20px;
+    border-radius:8px;
+    background:#137bd2;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.dangerButton{
+    border:0;
+    padding:13px 20px;
+    border-radius:8px;
+    background:#c93636;
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.good{
+    color:#087a43;
+    font-weight:bold;
+}
+
+.bad{
+    color:#c52222;
+    font-weight:bold;
+}
+
+.fileRow{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px;
+    border-bottom:1px solid #e1e7eb;
+}
+
+.fileRow:last-child{
+    border-bottom:0;
+}
+
+.fileRow span:first-child{
+    flex:1;
+}
+
+.aiMessage{
+    background:#eaf4ff;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:12px;
+}
+
+#terminal{
+    background:#071017;
+    color:#7cf3a6;
+    min-height:350px;
+    padding:18px;
+    border-radius:10px;
+    font-family:Consolas,monospace;
+    overflow:auto;
+}
+
+#terminalInput{
+    width:100%;
+    border:0;
+    outline:0;
+    background:#071017;
+    color:#fff;
+    font-family:Consolas,monospace;
+    padding:12px;
+    font-size:15px;
+}
+
+.desktop{
+    flex:1;
+    position:relative;
+    overflow:hidden;
+    background:
+        linear-gradient(135deg,#e9f2f8,#c8d9e5);
+}
+
+.desktopIcon{
+    position:absolute;
+    width:90px;
+    text-align:center;
+    cursor:pointer;
+    padding:8px;
+    border-radius:8px;
+}
+
+.desktopIcon:hover{
+    background:#ffffff44;
+}
+
+.desktopIcon .icon{
+    font-size:40px;
+}
+
+.taskbar{
     position:absolute;
     left:0;
     right:0;
     bottom:0;
-    height:46px;
+    height:54px;
+    background:#122334eF;
     display:flex;
     align-items:center;
-    background:#07111ddd;
-    z-index:9000;
-}
-
-#start{
-    width:58px;
-    height:46px;
-    color:white;
-    border:0;
-    background:transparent;
-    font-size:26px;
-}
-
-#start:hover{
-    background:#146fae;
-}
-
-#tasks{
-    display:flex;
-    flex:1;
-}
-
-.task{
-    min-width:48px;
-    height:38px;
-    border:0;
-    background:transparent;
-    color:white;
-}
-
-.task:hover{
-    background:#ffffff1c;
-}
-
-#status{
-    display:flex;
-    gap:8px;
-    align-items:center;
-    padding-right:12px;
-    font-size:13px;
-}
-
-#battery{
-    width:65px;
-    height:10px;
-    border:1px solid #aaa;
-    border-radius:3px;
-}
-
-#batteryFill{
-    width:100%;
-    height:100%;
-    background:#39dc69;
-}
-
-/* ================= START MENU ================= */
-
-#startMenu{
-    position:absolute;
-    left:8px;
-    bottom:52px;
-    z-index:9500;
-    width:390px;
-    height:500px;
-    display:none;
-    padding:15px;
-    color:white;
-    border:1px solid #566c82;
-    border-radius:10px;
-    background:#101c29f5;
-    box-shadow:0 20px 70px #000;
-}
-
-#startMenu h2{
-    margin-top:0;
-}
-
-#startSearch{
-    width:100%;
-    padding:10px;
-    color:white;
-    background:#0b1520;
-    border:1px solid #52677b;
-    border-radius:6px;
-}
-
-.apps{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-    margin-top:14px;
-}
-
-.appButton{
-    min-height:75px;
-    border:0;
-    border-radius:7px;
-    color:white;
-    background:#263c52;
-}
-
-.appButton:hover{
-    background:#3b5e7d;
-}
-
-/* ================= WINDOWS ================= */
-
-.window{
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:720px;
-    height:510px;
-    transform:translate(-50%,-50%);
-    display:none;
-    overflow:hidden;
-    color:#17212b;
-    background:#f0f3f6;
-    border:1px solid #8997a5;
-    border-radius:9px;
-    box-shadow:0 25px 80px #0009;
-    z-index:100;
-}
-
-.window.max{
-    left:0;
-    top:0;
-    width:100%;
-    height:calc(100% - 46px);
-    transform:none;
-    border-radius:0;
-}
-
-.window.restore{
-    left:50%;
-    top:50%;
-    width:720px;
-    height:510px;
-    transform:translate(-50%,-50%);
-}
-
-.titlebar{
-    height:40px;
-    display:flex;
-    align-items:center;
-    padding-left:13px;
-    background:#e3e8ed;
-    border-bottom:1px solid #b4bec8;
-}
-
-.title{
-    flex:1;
-    font-weight:bold;
-}
-
-.winbuttons{
-    height:100%;
-    display:flex;
-}
-
-.winbuttons button{
-    width:45px;
-    height:100%;
-    border:0;
-    background:transparent;
-}
-
-.winbuttons button:hover{
-    background:#d0d7de;
-}
-
-.winbuttons .close:hover{
-    color:white;
-    background:#d9534f;
-}
-
-.body{
-    height:calc(100% - 40px);
-    overflow:auto;
-}
-
-/* ================= BROWSER ================= */
-
-.browserBar{
-    display:flex;
     gap:7px;
-    padding:10px;
-    background:#dbe1e7;
+    padding:6px;
 }
 
-.browserBar input{
-    flex:1;
-    padding:9px;
-}
-
-.browserBar button{
-    padding:0 15px;
-    color:white;
+.taskbar button{
     border:0;
-    border-radius:5px;
-    background:#1976d2;
-}
-
-.browserPage{
-    padding:25px;
-    line-height:1.6;
-}
-
-/* ================= FILES ================= */
-
-.files{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:12px;
-    padding:18px;
-}
-
-.file{
-    padding:22px 5px;
-    text-align:center;
-    border-radius:8px;
-    background:#e0e5ea;
-}
-
-.file:hover{
-    background:#cad4dd;
-}
-
-/* ================= TERMINAL ================= */
-
-.term{
-    height:100%;
-    padding:14px;
-    color:#43ff64;
-    background:#05090c;
-    font-family:Consolas,monospace;
-}
-
-#terminalOutput{
-    white-space:pre-wrap;
-    line-height:1.45;
-}
-
-.termline{
-    display:flex;
-}
-
-#terminalInput{
-    flex:1;
-    border:0;
-    outline:0;
-    color:#43ff64;
-    background:transparent;
-    font-family:Consolas,monospace;
-}
-
-/* ================= SECURITY ================= */
-
-.security{
-    padding:25px;
-}
-
-.card{
-    padding:25px;
-    margin-bottom:18px;
-    border-radius:10px;
-    background:#dfe6eb;
-}
-
-.card h2{
-    font-size:30px;
-}
-
-.scan{
-    padding:13px 22px;
-    border:0;
-    border-radius:7px;
-    color:white;
-    background:#1878d5;
-    font-weight:bold;
-}
-
-.scan:hover{
-    background:#0b67c0;
-}
-
-.quarantine{
-    margin-top:15px;
-    padding:13px 22px;
-    border:0;
-    border-radius:7px;
-    color:white;
-    background:#c62828;
-    font-weight:bold;
-}
-
-.quarantine:hover{
-    background:#a91e1e;
-}
-
-#scanResult{
-    margin-top:18px;
-    min-height:70px;
-    padding:15px;
-    background:white;
-    border-radius:7px;
-}
-
-/* ================= AI ================= */
-
-.ai{
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    color:white;
-    background:#0b1420;
-}
-
-#aiMessages{
-    flex:1;
-    overflow:auto;
-    padding:15px;
-}
-
-.msg{
-    max-width:85%;
-    margin-bottom:10px;
-    padding:10px 13px;
-    border-radius:9px;
-}
-
-.bot{
-    background:#273d57;
-}
-
-.user{
-    margin-left:auto;
-    background:#176fc7;
-}
-
-.aiInput{
-    display:flex;
-    gap:7px;
-    padding:10px;
-    border-top:1px solid #34495e;
-}
-
-#aiInput{
-    flex:1;
-    padding:10px;
-    color:white;
-    background:#101b29;
-    border:1px solid #52687e;
+    background:#ffffff18;
+    color:#fff;
     border-radius:6px;
+    padding:9px 13px;
+    cursor:pointer;
 }
 
-.aiInput button{
-    padding:0 17px;
-    border:0;
-    border-radius:6px;
-    color:white;
-    background:#1677d2;
-}
-
-/* ================= NOTES ================= */
-
-.note{
-    width:100%;
-    height:350px;
-    padding:12px;
-    resize:none;
-}
-
-/* ================= SPREADSHEET ================= */
-
-.sheet{
-    width:100%;
-    border-collapse:collapse;
-}
-
-.sheet th,
-.sheet td{
-    min-width:110px;
-    padding:9px;
-    border:1px solid #aeb8c1;
-}
-
-.sheet th{
-    background:#dce2e7;
-}
-
-/* ================= SETTINGS ================= */
-
-.settings{
-    padding:20px;
-}
-
-.settings button{
-    margin:5px;
-    padding:12px 18px;
-    border:0;
-    border-radius:7px;
-    color:white;
-    background:#1976d2;
-}
-
-.settings button:hover{
-    background:#0c66bd;
-}
-
-#enterHouse{
-    font-size:17px;
-}
-
-/* ================= HOUSE ================= */
-
-#house{
-    display:none;
+#houseUI{
     position:fixed;
     inset:0;
+    z-index:400;
+    display:none;
     background:#111;
-    color:white;
 }
 
-#houseCanvas{
+#houseLabel{
     position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-}
-
-#houseHUD{
-    position:absolute;
-    left:15px;
-    top:15px;
-    z-index:20;
-    width:360px;
-    padding:15px;
-    border:1px solid #506a82;
-    border-radius:9px;
-    background:#07111de8;
-}
-
-#houseHUD h2{
-    margin:0 0 8px;
-}
-
-#houseInfo{
-    margin-top:8px;
-    color:#72d7ff;
-}
-
-#controls{
-    position:absolute;
-    left:20px;
-    bottom:20px;
-    z-index:20;
-    padding:12px;
-    border:1px solid #455d74;
-    border-radius:8px;
-    background:#07111dcc;
-    line-height:1.5;
-}
-
-#returnLaptop{
-    position:absolute;
-    right:20px;
-    bottom:20px;
-    z-index:20;
-    padding:12px 18px;
-    color:white;
-    border:0;
-    border-radius:7px;
-    background:#1678d5;
-}
-
-#crosshair{
-    position:absolute;
+    top:90px;
     left:50%;
-    top:50%;
-    width:18px;
-    height:18px;
-    transform:translate(-50%,-50%);
-    pointer-events:none;
+    transform:translateX(-50%);
+    z-index:20;
+    background:#071521dd;
+    padding:10px 18px;
+    border-radius:10px;
+    border:1px solid #3d6b80;
 }
 
-#crosshair:before,
-#crosshair:after{
-    content:"";
-    position:absolute;
-    background:white;
+#missionList{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:8px;
 }
 
-#crosshair:before{
-    left:0;
-    top:8px;
-    width:18px;
-    height:2px;
-}
-
-#crosshair:after{
-    left:8px;
-    top:0;
-    width:2px;
-    height:18px;
-}
-
-/* ================= NOTICES ================= */
-
-#notice{
-    position:absolute;
-    right:15px;
-    bottom:60px;
-    z-index:9990;
-    width:330px;
-}
-
-.notice{
-    padding:12px;
-    margin-top:8px;
-    color:white;
-    border:1px solid #52657a;
-    border-radius:8px;
-    background:#111d2bf5;
-}
-
-/* ================= POWER OFF ================= */
-
-#powerOff{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:20000;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    color:white;
-    background:#000;
-}
-
-#powerOff .batteryIcon{
-    font-size:80px;
-}
-
-#powerOff button{
-    padding:13px 25px;
-    border:0;
+.missionItem{
+    padding:9px;
     border-radius:7px;
-    color:white;
-    background:#1678d4;
+    background:#eef3f6;
+}
+
+.missionItem.done{
+    background:#d7f5e5;
+    color:#126b42;
+}
+
+.missionItem.current{
+    background:#d5ecff;
+    border:2px solid #4ca8e8;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ======================================================
-INTRO
-====================================================== -->
+<div id="game"></div>
 
-<div id="intro">
+<div id="hud">
+    <div id="topbar">
 
-    <div class="box">
+        <div style="font-size:30px">💻</div>
 
-        <div class="logo">
-            THE LAPTOP
+        <div id="missionTitle">
+            <div id="missionNumber">MISSION 1</div>
+            <div id="missionName">Wake Up The Laptop</div>
         </div>
 
-        <p class="desc">
-            Welcome to THE LAPTOP.
-            <br><br>
-            Explore the MS OS computer, complete 20 missions,
-            protect the laptop from viruses, use the AI Helper,
-            investigate the house and find the missing charger.
-        </p>
-
-        <button class="primary" onclick="showRules()">
-            START GAME
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-RULES
-====================================================== -->
-
-<div id="rules">
-
-    <div class="box">
-
-        <h1>📜 THE LAPTOP — RULES</h1>
-
-        <div class="rule">
-            🎯 <b>1.</b> Complete all 20 missions.
-        </div>
-
-        <div class="rule">
-            🔋 <b>2.</b> Keep an eye on the laptop battery.
-        </div>
-
-        <div class="rule">
-            🔌 <b>3.</b> If the battery runs out, search the house for the charger.
-        </div>
-
-        <div class="rule">
-            🛡️ <b>4.</b> Use MS Security to protect the computer.
-        </div>
-
-        <div class="rule">
-            🤖 <b>5.</b> Use the AI Helper when you need help.
-        </div>
-
-        <div class="rule">
-            ⌨️ <b>6.</b> Terminal contains useful commands and clues.
-        </div>
-
-        <div class="rule">
-            📁 <b>7.</b> Search Files for important files.
-        </div>
-
-        <div class="rule">
-            🌐 <b>8.</b> Use Browser to investigate clues.
-        </div>
-
-        <div class="rule">
-            📝 <b>9.</b> Use Notes to record clues.
-        </div>
-
-        <div class="rule">
-            📊 <b>10.</b> Spreadsheet is part of MS OS.
-        </div>
-
-        <div class="rule">
-            🏠 <b>11.</b> The house is a 3D area that can be explored.
-        </div>
-
-        <div class="rule">
-            ⬆️ <b>12.</b> Use Arrow Keys or WASD to move.
-        </div>
-
-        <div class="rule">
-            🖱️ <b>13.</b> Use the mouse to look around.
-        </div>
-
-        <div class="rule">
-            🏃 <b>14.</b> Hold Shift to run.
-        </div>
-
-        <div class="rule">
-            🦘 <b>15.</b> Press Space to jump.
-        </div>
-
-        <div class="rule">
-            ✋ <b>16.</b> Press E near objects to interact.
-        </div>
-
-        <div class="rule">
-            ⚙️ <b>17.</b> <b>Settings is the official doorway to the house.</b>
-        </div>
-
-        <div class="rule">
-            🏠 <b>18.</b> To enter the house, open <b>Settings</b> first.
-        </div>
-
-        <div class="rule">
-            🔒 <b>19.</b> The house cannot be entered directly from the desktop or Start Menu.
-        </div>
-
-        <div class="rule">
-            🏆 <b>20.</b> Complete all 20 missions to win THE LAPTOP.
-        </div>
-
-        <button class="primary" onclick="startGame()">
-            ✅ I UNDERSTAND — START
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-GAME
-====================================================== -->
-
-<div id="game">
-
-    <div id="desktop">
-
-        <!-- DESKTOP ICONS -->
-
-        <div id="icons">
-
-            <div class="icon" onclick="openApp('browser')">
-                <div class="iconEmoji">🌐</div>
-                <div class="iconName">Browser</div>
-            </div>
-
-            <div class="icon" onclick="openApp('files')">
-                <div class="iconEmoji">📁</div>
-                <div class="iconName">Files</div>
-            </div>
-
-            <div class="icon" onclick="openApp('terminal')">
-                <div class="iconEmoji">⌨️</div>
-                <div class="iconName">Terminal</div>
-            </div>
-
-            <div class="icon" onclick="openApp('security')">
-                <div class="iconEmoji">🛡️</div>
-                <div class="iconName">MS Security</div>
-            </div>
-
-            <div class="icon" onclick="openApp('ai')">
-                <div class="iconEmoji">🤖</div>
-                <div class="iconName">AI Helper</div>
-            </div>
-
-            <div class="icon" onclick="openApp('notes')">
-                <div class="iconEmoji">📝</div>
-                <div class="iconName">Notes</div>
-            </div>
-
-            <div class="icon" onclick="openApp('sheet')">
-                <div class="iconEmoji">📊</div>
-                <div class="iconName">Spreadsheet</div>
-            </div>
-
-            <div class="icon" onclick="openApp('settings')">
-                <div class="iconEmoji">⚙️</div>
-                <div class="iconName">Settings</div>
-            </div>
-
-        </div>
-
-
-        <!-- MISSION -->
-
-        <div id="mission">
-
-            <h3>🎯 Current Mission</h3>
-
-            <div id="missionName"></div>
-
-            <div id="missionText"></div>
-
-            <div class="progress">
-                <div id="progress"></div>
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- TASKBAR -->
-
-    <div id="taskbar">
-
-        <button id="start" onclick="toggleStart()">
-            ⊞
-        </button>
-
-        <div id="tasks"></div>
-
-        <div id="status">
-
-            📶
-
-            <span id="batteryText">
-                100%
-            </span>
-
-            <div id="battery">
+        <div id="batteryBox">
+            <div id="batteryText">🔋 100%</div>
+            <div id="batteryBar">
                 <div id="batteryFill"></div>
             </div>
-
-            <span id="clock">
-                00:00
-            </span>
-
         </div>
+
+        <button
+            class="secondary"
+            style="pointer-events:auto"
+            onclick="openLaptop()">
+            💻 Laptop
+        </button>
+
+        <button
+            class="secondary"
+            style="pointer-events:auto"
+            onclick="togglePause()">
+            ⏸
+        </button>
 
     </div>
 
-
-    <!-- START MENU -->
-
-    <div id="startMenu">
-
-        <h2>🪟 MS OS</h2>
-
-        <input
-            id="startSearch"
-            placeholder="Search apps..."
-            oninput="searchApps(this.value)"
-        >
-
-        <div class="apps">
-
-            <button class="appButton" onclick="openApp('browser')">
-                🌐<br>Browser
-            </button>
-
-            <button class="appButton" onclick="openApp('files')">
-                📁<br>Files
-            </button>
-
-            <button class="appButton" onclick="openApp('terminal')">
-                ⌨️<br>Terminal
-            </button>
-
-            <button class="appButton" onclick="openApp('security')">
-                🛡️<br>Security
-            </button>
-
-            <button class="appButton" onclick="openApp('ai')">
-                🤖<br>AI Helper
-            </button>
-
-            <button class="appButton" onclick="openApp('notes')">
-                📝<br>Notes
-            </button>
-
-            <button class="appButton" onclick="openApp('sheet')">
-                📊<br>Spreadsheet
-            </button>
-
-            <button class="appButton" onclick="openApp('settings')">
-                ⚙️<br>Settings
-            </button>
-
-            <button class="appButton" onclick="lockedHouse()">
-                🏠<br>House
-            </button>
-
-        </div>
-
+    <div id="progressOuter">
+        <div id="progressInner"></div>
     </div>
-
-
-    <!-- ==================================================
-    BROWSER
-    ================================================== -->
-
-    <div class="window" id="browser">
-
-        <div class="titlebar">
-
-            <div class="title">
-                🌐 Browser
-            </div>
-
-            <div class="winbuttons">
-
-                <button onclick="minimizeApp('browser')">
-                    −
-                </button>
-
-                <button onclick="maximizeApp('browser')">
-                    □
-                </button>
-
-                <button onclick="restoreApp('browser')">
-                    ❐
-                </button>
-
-                <button class="close" onclick="closeApp('browser')">
-                    ×
-                </button>
-
-            </div>
-
-        </div>
-
-        <div class="body">
-
-            <div class="browserBar">
-
-                <input
-                    id="browserInput"
-                    value="ms://search"
-                >
-
-                <button onclick="browserSearch()">
-                    Search
-                </button>
-
-            </div>
-
-            <div class="browserPage" id="browserPage">
-
-                <h1>
-                    MS Search
-                </h1>
-
-                <p>
-                    Search for clues about the laptop.
-                </p>
-
-                <p>
-                    Try:
-                    <b>charger</b>,
-                    <b>virus</b>,
-                    <b>house</b>,
-                    or
-                    <b>mystery</b>.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ==================================================
-    FILES
-    ================================================== -->
-
-    <div class="window" id="files">
-
-        <div class="titlebar">
-
-            <div class="title">
-                📁 File Explorer
-            </div>
-
-            <div class="winbuttons">
-
-                <button onclick="minimizeApp('files')">
-                    −
-                </button>
-
-                <button onclick="maximizeApp('files')">
-                    □
-                </button>
-
-                <button onclick="restoreApp('files')">
-                    ❐
-                </button>
-
-                <button class="close" onclick="closeApp('files')">
-                    ×
-                </button>
-
-            </div>
-
-        </div>
-
-        <div class="body">
-
-            <div class="files">
-
-                <div class="file" onclick="openMissionFile()">
-                    📄<br>
-                    mission.txt
-                </div>
-
-                <div class="file">
-                    📁<br>
-                    Documents
-                </div>
-
-                <div class="file">
-                    📁<br>
-                    Pictures
-                </div>
-
-                <div class="file">
-                    📁<br>
-                    Downloads
-                </div>
-
-                <div class="file">
-                    📄<br>
-                    readme.txt
-                </div>
-
-                <div class="file">
-                    📄<br>
-                    system.log
-                </div>
-
-                <div class="file" onclick="showVirusFile()">
-                    🦠<br>
-                    unknown.exe
-                </div>
-
-                <div class="file">
-                    🗑️<br>
-                    Recycle Bin
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ==================================================
-    TERMINAL
-    ================================================== -->
-
-    <div class="window" id="terminal">
-
-        <div class="titlebar">
-
-            <div class="title">
-                ⌨️ Terminal
-            </div>
-
-            <div class="winbuttons">
-
-                <button onclick="minimizeApp('terminal')">
-                    −
-                </button>
-
-                <button onclick="maximizeApp('terminal')">
-                    □
-                </button>
-
-                <button onclick="restoreApp('terminal')">
-                    ❐
-                </button>
-
-                <button class="close" onclick="closeApp('terminal')">
-                    ×
-                </button>
-
-            </div>
-
-        </div>
-
-        <div class="body term">
-
-            <div id="terminalOutput">
-THE LAPTOP TERMINAL
-MS OS Terminal Version 1.0
-
-Type "help" for commands.
-
-            </div>
-
-            <div class="termline">
-
-                C:\Users\Player&gt;&nbsp;
-
-                <input
-                    id="terminalInput"
-                    autocomplete="off"
-                    onkeydown="terminalKey(event)"
-                >
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ==================================================
-    SECURITY
-    ================================================== -->
-
-    <div class="window" id="security">
-
-        <div class="titlebar">
-
-            <div class="title">
-                🛡️ MS Security
-            </div>
-
-            <div class="winbuttons">
-
-                <button onclick="minimizeApp('security')">
-                    −
-                </button>
-
-                <button onclick="maximizeApp('security')">
-                    □
-                </button>
-
-                <button onclick="restoreApp('security')">
-                    ❐
-                </button>
-
-                <button class="close" onclick="closeApp('security')">
-                    ×
-                </button>
-
-            </div>
-
-        </div>
-
-        <div class="body security">
-
-            <div class="card">
-
-                <h2>
-                    🛡️ Antivirus
-                </h2>
-
-                <p>
-                    Real-time protection:
-                    <b>ON</b>
-                </p>
-
-                <p>
-                    System:
-                    <b id="securityStatus">
-                        Protected
-                    </b>
-                </p>
-
-            </div>
-
-
-            <button class="scan" onclick="scanSystem()">
-                🔍 Scan Now
-            </button>
-
-
-            <div id="scanResult">
-                Ready to scan.
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ==================================================
-    AI
-    ================================================== -->
-
-    <div class="window" id="ai">
-
-        <div class="titlebar">
-
-            <div class="title">
-                🤖 AI Helper
-            </div>
-
-            <div class="winbuttons">
-
-                <button onclick="minimizeApp('ai')">
-                    −
-                </button>
-
-                <button onclick="maximizeApp('ai')">
-                    □
-                </button>
-
-                <button onclick="restoreApp('ai')">
-                    ❐
-                </button>
-
-                <button class="close" onclick="closeApp('ai')">
-                    ×
-                </button>
-
-            </div>
-
-        </div>
-
-        <div class="body ai">
-
-            <div id="aiMessages">
-
-                <div class="msg bot">
-
-                    Hello! I'm the AI Helper.
-
-                    <br><br>
-
-                    Ask me about missions,
-                    battery, charger,
-                    house, antivirus
-                    or clues.
-
-                </div>
-
-            </div>
-
-            <div class="aiInput">
-
-                <input
-                    id="aiInput"
-                    placeholder="Ask AI for help..."
-                    onkeydown="aiKey(event)"
-                >
-
-                <button onclick="askAI()">
-                    Send
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ==================================================
-    NOTES
-    ================================================== -->
-
-    <div class="window" id="notes">
-
-        <div class="titlebar">
-
-            <div class="title">
-                📝 Notes
-            </div>
-
-            <div class="winbuttons">
-
-                <button onclick="minimizeApp('notes')">
-                    −
-                </button>
-
-                <button onclick="maximizeApp('notes')">
-                    □
-                </button>
-
-                <button onclick="restoreApp('notes')">
-                    ❐
-                </button>
-
-                <button class="close" onclick="closeApp('notes')">
-                    ×
-                </button>
-
-            </div>
-
-        </div>
-
-        <div class="body" style="padding:18px">
-
-            <h2>
-                Mission Notes
-            </h2>
-
-            <textarea
-                id="notesArea"
-                class="note"
-                placeholder="Write clues here..."
-                oninput="notesWritten()"
-            ></textarea>
-
-        </div>
-
-    </div>
-
-
-    <!-- ==================================================
-    SPREADSHEET
-    ================================================== -->
-
-    <div class="window" id="sheet">
-
-        <div class="titlebar">
-
-            <div class="title">
-                📊 MS Spreadsheet
-            </div>
-
-            <div class="winbuttons">
-
-                <button onclick="minimizeApp('sheet')">
-                    −
-                </button>
-
-                <button onclick="maximizeApp('sheet')">
-                    □
-                </button>
-
-                <button onclick="restoreApp('sheet')">
-                    ❐
-                </button>
-
-                <button class="close" onclick="closeApp('sheet')">
-                    ×
-                </button>
-
-            </div>
-
-        </div>
-
-        <div class="body" style="padding:18px">
-
-            <h2>
-                MS Spreadsheet
-            </h2>
-
-            <table class="sheet">
-
-                <tr>
-                    <th>A</th>
-                    <th>B</th>
-                    <th>C</th>
-                    <th>D</th>
-                </tr>
-
-                <tr>
-                    <td contenteditable="true">
-                        Mission
-                    </td>
-
-                    <td contenteditable="true">
-                        Status
-                    </td>
-
-                    <td contenteditable="true">
-                        Battery
-                    </td>
-
-                    <td contenteditable="true">
-                        Notes
-                    </td>
-                </tr>
-
-                <tr>
-                    <td contenteditable="true">
-                        1
-                    </td>
-
-                    <td contenteditable="true">
-                        Complete
-                    </td>
-
-                    <td contenteditable="true">
-                        100%
-                    </td>
-
-                    <td contenteditable="true"></td>
-                </tr>
-
-                <tr>
-                    <td contenteditable="true">
-                        20
-                    </td>
-
-                    <td contenteditable="true">
-                        Final
-                    </td>
-
-                    <td contenteditable="true"></td>
-
-                    <td contenteditable="true"></td>
-                </tr>
-
-            </table>
-
-        </div>
-
-    </div>
-
-
-    <!-- ==================================================
-    SETTINGS
-    ================================================== -->
-
-    <div class="window" id="settings">
-
-        <div class="titlebar">
-
-            <div class="title">
-                ⚙️ Settings
-            </div>
-
-            <div class="winbuttons">
-
-                <button onclick="minimizeApp('settings')">
-                    −
-                </button>
-
-                <button onclick="maximizeApp('settings')">
-                    □
-                </button>
-
-                <button onclick="restoreApp('settings')">
-                    ❐
-                </button>
-
-                <button class="close" onclick="closeApp('settings')">
-                    ×
-                </button>
-
-            </div>
-
-        </div>
-
-        <div class="body settings">
-
-            <h2>
-                ⚙️ MS OS Settings
-            </h2>
-
-            <p>
-                Computer:
-                <b>THE LAPTOP</b>
-            </p>
-
-            <p>
-                Operating System:
-                <b>MS OS</b>
-            </p>
-
-            <p>
-                Security:
-                <b>MS Security</b>
-            </p>
-
-            <hr>
-
-            <h3>
-                🏠 House
-            </h3>
-
-            <p>
-                <b>Important:</b>
-                Settings is the official doorway to the house.
-            </p>
-
-            <p id="houseStatus">
-                Complete Missions 1–6 before entering the house.
-            </p>
-
-            <button id="enterHouse" onclick="enterHouse()">
-                🔒 Enter House
-            </button>
-
-            <br>
-
-            <button onclick="resetGame()">
-                🆕 Reset Game
-            </button>
-
-        </div>
-
-    </div>
-
 </div>
 
+<div id="crosshair">+</div>
 
-<!-- ======================================================
-HOUSE
-====================================================== -->
-
-<div id="house">
-
-    <canvas id="houseCanvas"></canvas>
-
-    <div id="crosshair"></div>
-
-    <div id="houseHUD">
-
-        <h2>
-            🏠 THE HOUSE
-        </h2>
-
-        <div id="houseMission">
-            Explore the house.
-        </div>
-
-        <div id="houseInfo">
-            Explore the house.
-        </div>
-
-    </div>
-
-
-    <div id="controls">
-
-        <b>CONTROLS</b>
-        <br>
-        ↑ / W — Forward
-        <br>
-        ↓ / S — Backward
-        <br>
-        ← / A — Left
-        <br>
-        → / D — Right
-        <br>
-        Mouse — Look
-        <br>
-        Shift — Run
-        <br>
-        Space — Jump
-        <br>
-        E — Interact
-
-    </div>
-
-
-    <button id="returnLaptop" onclick="returnLaptop()">
-        💻 Return to Laptop
-    </button>
-
+<div id="interactHint">
+    Press <b>E</b> to interact
 </div>
 
-
-<!-- ======================================================
-NOTIFICATIONS
-====================================================== -->
+<div id="help">
+    <b>CONTROLS</b><br>
+    ↑ ↓ ← → Move<br>
+    Mouse Look<br>
+    E Interact<br>
+    Space Jump<br>
+    L Laptop
+</div>
 
 <div id="notice"></div>
 
 
-<!-- ======================================================
-POWER OFF
-====================================================== -->
+<!-- RULES -->
 
-<div id="powerOff">
+<div id="rulesScreen">
 
-    <div class="batteryIcon">
-        🔋
+    <div class="panel">
+
+        <h1>💻 THE LAPTOP</h1>
+
+        <h2>Before You Start</h2>
+
+        <div class="rules">
+
+            <p>
+                You are investigating a mysterious laptop.
+                Complete all <b>20 missions</b> to finish the game.
+            </p>
+
+            <ul>
+                <li>🎯 Missions must be completed in order, starting with <b>Mission 1</b>.</li>
+                <li>⌨️ Use <b>Arrow Keys</b> to move around the 3D area.</li>
+                <li>🖱️ Move the mouse to look around.</li>
+                <li>🔵 Press <b>E</b> when the game says you can interact.</li>
+                <li>🦘 Press <b>Space</b> to jump.</li>
+                <li>💻 Press <b>L</b> or the Laptop button to open the laptop.</li>
+                <li>🔋 The laptop battery can run out.</li>
+                <li>🔌 If the battery is gone, you must search the house for the charger.</li>
+                <li>⚙️ <b>Settings is the official doorway to the house.</b></li>
+                <li>🏠 You must use <b>Settings → Enter House</b> to enter the house.</li>
+                <li>🛡️ The laptop contains <b>MS Security</b> and an antivirus scanner.</li>
+                <li>🗃️ Threats can be moved to <b>Quarantine</b>.</li>
+                <li>🤖 The laptop has an <b>AI Helper</b> that can give hints.</li>
+                <li>🖥️ The laptop also contains <b>MS OS</b>.</li>
+                <li>🏆 Mission 20 is the final investigation.</li>
+            </ul>
+
+            <h2>Important</h2>
+
+            <p>
+                Do not skip missions. Complete them in order.
+                The game always begins at <b>Mission 1</b>.
+            </p>
+
+        </div>
+
+        <button class="primary" onclick="startGame()">
+            ▶ START GAME
+        </button>
+
     </div>
-
-    <h1>
-        BATTERY EMPTY
-    </h1>
-
-    <p>
-        The laptop has powered off.
-    </p>
-
-    <button onclick="emergencyHouseSearch()">
-        🏠 SEARCH HOUSE
-    </button>
 
 </div>
 
 
+<!-- PAUSE -->
+
+<div id="pauseScreen">
+
+    <div class="panel">
+
+        <h1>⏸ PAUSED</h1>
+
+        <p>Take a break. Your mission progress is safe.</p>
+
+        <button class="primary" onclick="togglePause()">
+            ▶ RESUME
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- LAPTOP -->
+
+<div id="laptopUI">
+
+    <div class="window">
+
+        <div class="titlebar">
+
+            <div class="title" id="windowTitle">
+                💻 MS OS
+            </div>
+
+            <div class="windowButtons">
+
+                <button onclick="minimizeLaptop()">
+                    −
+                </button>
+
+                <button onclick="maximizeLaptop()">
+                    □
+                </button>
+
+                <button onclick="restoreLaptop()">
+                    ◱
+                </button>
+
+                <button class="close" onclick="closeLaptop()">
+                    ×
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="osBody">
+
+            <div class="sidebar">
+
+                <button onclick="showApp('desktop')">
+                    🖥️ Desktop
+                </button>
+
+                <button onclick="showApp('security')">
+                    🛡️ MS Security
+                </button>
+
+                <button onclick="showApp('files')">
+                    📁 Files
+                </button>
+
+                <button onclick="showApp('ai')">
+                    🤖 AI Helper
+                </button>
+
+                <button onclick="showApp('settings')">
+                    ⚙️ Settings
+                </button>
+
+                <button onclick="showApp('terminal')">
+                    ⌨️ Terminal
+                </button>
+
+                <button onclick="showApp('missions')">
+                    🎯 Missions
+                </button>
+
+            </div>
+
+            <div class="appContent" id="appContent"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- WIN -->
+
+<div id="winScreen">
+
+    <div class="winBox">
+
+        <div class="winIcon">🏆</div>
+
+        <h1>YOU WIN!</h1>
+
+        <h2>THE LAPTOP COMPLETE</h2>
+
+        <p>
+            You completed all 20 missions.
+        </p>
+
+        <p>
+            🔋 Battery investigation complete<br>
+            🏠 House investigation complete<br>
+            🛡️ Antivirus investigation complete<br>
+            🗃️ Quarantine completed<br>
+            🤖 AI Helper used<br>
+            ⚙️ Settings doorway used<br>
+            💻 MS OS investigated<br>
+            🔍 Final investigation complete
+        </p>
+
+        <button class="primary" onclick="location.reload()">
+            🔄 PLAY AGAIN
+        </button>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
+
 <script>
-
 /* =========================================================
-GAME STATE
-========================================================= */
+   THE LAPTOP
+   SINGLE FILE GAME
+   ========================================================= */
 
-let mission = 1;
+
+/* -----------------------------
+   GAME STATE
+----------------------------- */
+
+let scene;
+let camera;
+let renderer;
+let clock;
+
+let started = false;
+let paused = false;
+
+let keys = {};
+
+let player = {
+    x:0,
+    y:2,
+    z:10,
+    vy:0,
+    speed:0.13,
+    grounded:true
+};
+
+let yaw = 0;
+let pitch = 0;
+
 let battery = 100;
 
-let virusRemoved = false;
-let chargerFound = false;
+let mission = 1;
 
-let gameStarted = false;
-let houseActive = false;
 let houseUnlocked = false;
+let inHouse = false;
 
-let secretUnlocked = false;
+let chargerFound = false;
+let virusQuarantined = false;
+let scanDone = false;
+let aiUsed = false;
+let settingsUsed = false;
+let filesInspected = false;
+let terminalUsed = false;
+let desktopInspected = false;
+let oldComputerInspected = false;
+let finalInvestigation = false;
 
-let zIndex = 100;
+let nearObject = null;
+
+let objects = [];
+let houseObjects = [];
+
+let laptopMaximized = false;
+let laptopMinimized = false;
 
 
-/* =========================================================
-20 MISSIONS
-========================================================= */
+/* -----------------------------
+   MISSIONS
+----------------------------- */
 
 const missions = [
 
-    [
-        "MISSION 1 — OPEN THE BROWSER",
-        "Open the Browser."
-    ],
+    {
+        name:"Wake Up The Laptop",
+        description:"Find the laptop and turn it on.",
+        check:()=>desktopInspected
+    },
 
-    [
-        "MISSION 2 — OPEN SECURITY",
-        "Open MS Security."
-    ],
+    {
+        name:"Open MS OS",
+        description:"Open the MS OS desktop.",
+        check:()=>desktopInspected
+    },
 
-    [
-        "MISSION 3 — SCAN THE LAPTOP",
-        "Run an antivirus scan."
-    ],
+    {
+        name:"Check The Files",
+        description:"Inspect the laptop files.",
+        check:()=>filesInspected
+    },
 
-    [
-        "MISSION 4 — QUARANTINE THE VIRUS",
-        "Quarantine unknown.exe."
-    ],
+    {
+        name:"Run A Security Scan",
+        description:"Open MS Security and run a scan.",
+        check:()=>scanDone
+    },
 
-    [
-        "MISSION 5 — CHECK THE TERMINAL",
-        'Open Terminal and type "status".'
-    ],
+    {
+        name:"Find The Threat",
+        description:"Investigate the suspicious file.",
+        check:()=>scanDone
+    },
 
-    [
-        "MISSION 6 — CHECK THE BATTERY",
-        'Open Terminal and type "battery".'
-    ],
+    {
+        name:"Quarantine The Threat",
+        description:"Move unknown.exe to Quarantine.",
+        check:()=>virusQuarantined
+    },
 
-    [
-        "MISSION 7 — ENTER THE HOUSE",
-        "Open Settings and enter the house."
-    ],
+    {
+        name:"Ask The AI",
+        description:"Use the AI Helper for advice.",
+        check:()=>aiUsed
+    },
 
-    [
-        "MISSION 8 — SEARCH THE LIVING ROOM",
-        "Find and inspect the living room desk."
-    ],
+    {
+        name:"Open Settings",
+        description:"Open Settings. It is the official doorway.",
+        check:()=>settingsUsed
+    },
 
-    [
-        "MISSION 9 — SEARCH THE CABINET",
-        "Find and inspect the cabinet."
-    ],
+    {
+        name:"Enter The House",
+        description:"Use Settings → Enter House.",
+        check:()=>inHouse
+    },
 
-    [
-        "MISSION 10 — FIND THE CHARGER",
-        "Search the house and find the laptop charger."
-    ],
+    {
+        name:"Search The Living Room",
+        description:"Investigate the living room.",
+        check:()=>houseObjects.some(o=>o.name==="Living Room Desk" && o.checked)
+    },
 
-    [
-        "MISSION 11 — RETURN TO THE LAPTOP",
-        "Return to the laptop after finding the charger."
-    ],
+    {
+        name:"Search The Cabinet",
+        description:"Search the cabinet.",
+        check:()=>houseObjects.some(o=>o.name==="Cabinet" && o.checked)
+    },
 
-    [
-        "MISSION 12 — ASK THE AI",
-        "Ask the AI Helper for help."
-    ],
+    {
+        name:"Find The Charger",
+        description:"Find the missing charger.",
+        check:()=>chargerFound
+    },
 
-    [
-        "MISSION 13 — OPEN FILE EXPLORER",
-        "Open File Explorer."
-    ],
+    {
+        name:"Return To The Laptop",
+        description:"Return to the laptop after finding the charger.",
+        check:()=>battery>5
+    },
 
-    [
-        "MISSION 14 — FIND THE SECRET FILE",
-        "Open mission.txt."
-    ],
+    {
+        name:"Check The Battery",
+        description:"Make sure the laptop has power.",
+        check:()=>battery>20
+    },
 
-    [
-        "MISSION 15 — WRITE A NOTE",
-        "Write something in Notes."
-    ],
+    {
+        name:"Use The Terminal",
+        description:"Open the terminal and run a command.",
+        check:()=>terminalUsed
+    },
 
-    [
-        "MISSION 16 — USE SPREADSHEET",
-        "Open MS Spreadsheet."
-    ],
+    {
+        name:"Inspect The System",
+        description:"Investigate the MS OS system.",
+        check:()=>desktopInspected
+    },
 
-    [
-        "MISSION 17 — OLD COMPUTER",
-        "Enter the house and inspect the old computer."
-    ],
+    {
+        name:"Investigate The Old Computer",
+        description:"Find the old computer in the house.",
+        check:()=>oldComputerInspected
+    },
 
-    [
-        "MISSION 18 — HIDDEN SYSTEM",
-        'Use Terminal and type "secret".'
-    ],
+    {
+        name:"Return To Settings",
+        description:"Use Settings again to inspect the system doorway.",
+        check:()=>settingsUsed
+    },
 
-    [
-        "MISSION 19 — SOLVE THE MYSTERY",
-        "Search for mystery in the Browser."
-    ],
+    {
+        name:"Prepare The Final Investigation",
+        description:"Use the AI Helper and Security tools before the final investigation.",
+        check:()=>aiUsed && virusQuarantined
+    },
 
-    [
-        "MISSION 20 — COMPLETE THE LAPTOP",
-        "Complete the final investigation."
-    ]
+    {
+        name:"Complete The Laptop",
+        description:"Return to the old computer and complete the final investigation.",
+        check:()=>finalInvestigation
+    }
 
 ];
 
 
-/* =========================================================
-INTRO
-========================================================= */
+/* -----------------------------
+   BASIC HELPERS
+----------------------------- */
 
-function showRules(){
+function notify(message){
 
-    document.getElementById("intro").style.display = "none";
-    document.getElementById("rules").style.display = "flex";
+    const el = document.getElementById("notice");
 
+    el.textContent = message;
+
+    el.classList.add("show");
+
+    clearTimeout(window.noticeTimer);
+
+    window.noticeTimer = setTimeout(()=>{
+        el.classList.remove("show");
+    },3000);
 }
 
 
-function startGame(){
+function updateMissionUI(){
 
-    document.getElementById("rules").style.display = "none";
-    document.getElementById("game").style.display = "block";
+    const m = missions[mission-1];
 
-    gameStarted = true;
+    document.getElementById("missionNumber").textContent =
+        "MISSION " + mission;
 
-    /*
-       IMPORTANT:
-       Always start at Mission 1.
-       No localStorage loading.
-    */
+    document.getElementById("missionName").textContent =
+        m.name + " — " + m.description;
 
-    mission = 1;
-    battery = 100;
-    virusRemoved = false;
-    chargerFound = false;
-    secretUnlocked = false;
+    document.getElementById("progressInner").style.width =
+        ((mission-1)/20*100) + "%";
 
-    updateMission();
-    updateBattery();
-    updateSettings();
-
-    notify("💻 Welcome to THE LAPTOP!");
-    notify("🎯 Mission 1 started.");
-
-}
-
-
-/* =========================================================
-MISSION SYSTEM
-========================================================= */
-
-function updateMission(){
-
-    const current = missions[mission - 1];
-
-    document.getElementById("missionName").innerText =
-        current[0];
-
-    document.getElementById("missionText").innerText =
-        current[1];
-
-    document.getElementById("progress").style.width = "0%";
-
-    updateSettings();
-
-    if(houseActive){
-
-        document.getElementById("houseMission").innerText =
-            current[1];
-
+    if(mission===20){
+        document.getElementById("progressInner").style.width="95%";
     }
-
 }
 
 
 function completeMission(){
 
-    document.getElementById("progress").style.width = "100%";
+    if(mission > 20) return;
 
-    notify(
-        "✅ " +
-        missions[mission - 1][0] +
-        " COMPLETE!"
-    );
+    const old = mission;
 
-    if(mission === 20){
+    notify("✅ Mission " + old + " complete!");
 
-        notify("🏆 ALL 20 MISSIONS COMPLETE!");
+    if(mission < 20){
 
-        setTimeout(function(){
+        mission++;
 
-            alert(
-                "🏆 YOU WIN!\n\n" +
-                "You completed all 20 missions of THE LAPTOP!"
+        updateMissionUI();
+
+        setTimeout(()=>{
+            notify(
+                "🎯 Mission " + mission + ": " +
+                missions[mission-1].name
             );
+        },900);
 
-        },500);
+    }else{
 
-        return;
+        finalInvestigation = true;
 
+        setTimeout(()=>{
+            showWinScreen();
+        },900);
     }
-
-    mission++;
-
-    updateMission();
-
 }
 
 
-/* =========================================================
-WINDOW SYSTEM
-========================================================= */
+function checkMission(){
 
-function openApp(id){
+    if(mission < 1 || mission > 20) return;
 
-    const windowElement =
-        document.getElementById(id);
+    const m = missions[mission-1];
 
-    if(!windowElement)return;
+    if(m.check()){
 
-    windowElement.style.display = "block";
-
-    zIndex++;
-
-    windowElement.style.zIndex = zIndex;
-
-    document.getElementById("startMenu").style.display =
-        "none";
-
-
-    addTask(id);
-
-    batteryDrain(0.3);
-
-
-    /* Mission triggers */
-
-    if(id === "browser" && mission === 1){
         completeMission();
-    }
 
-    if(id === "security" && mission === 2){
-        completeMission();
-    }
-
-    if(id === "files" && mission === 13){
-        completeMission();
-    }
-
-    if(id === "ai" && mission === 12){
-        completeMission();
-    }
-
-    if(id === "notes" && mission === 15){
-        /* completed when user writes */
-    }
-
-    if(id === "sheet" && mission === 16){
-        completeMission();
     }
 
 }
 
 
-function closeApp(id){
+/* -----------------------------
+   THREE.JS WORLD
+----------------------------- */
 
-    const w = document.getElementById(id);
+function initWorld(){
 
-    if(!w)return;
+    scene = new THREE.Scene();
 
-    w.style.display = "none";
+    scene.background = new THREE.Color(0x8db6cf);
 
-    removeTask(id);
-
-}
-
-
-function minimizeApp(id){
-
-    document.getElementById(id).style.display = "none";
-
-}
+    scene.fog = new THREE.Fog(0x8db6cf,35,130);
 
 
-function maximizeApp(id){
-
-    const w = document.getElementById(id);
-
-    w.classList.remove("restore");
-
-    w.classList.toggle("max");
-
-}
-
-
-function restoreApp(id){
-
-    const w = document.getElementById(id);
-
-    w.classList.remove("max");
-
-    w.classList.add("restore");
-
-}
-
-
-function addTask(id){
-
-    if(document.getElementById("task-" + id))
-        return;
-
-    const b = document.createElement("button");
-
-    b.className = "task";
-    b.id = "task-" + id;
-
-    const names = {
-
-        browser:"🌐",
-        files:"📁",
-        terminal:"⌨️",
-        security:"🛡️",
-        ai:"🤖",
-        notes:"📝",
-        sheet:"📊",
-        settings:"⚙️"
-
-    };
-
-    b.innerText = names[id] || "▣";
-
-    b.onclick = function(){
-
-        document.getElementById(id).style.display =
-            "block";
-
-    };
-
-    document.getElementById("tasks").appendChild(b);
-
-}
-
-
-function removeTask(id){
-
-    const b =
-        document.getElementById("task-" + id);
-
-    if(b)b.remove();
-
-}
-
-
-/* =========================================================
-START MENU
-========================================================= */
-
-function toggleStart(){
-
-    const menu =
-        document.getElementById("startMenu");
-
-    menu.style.display =
-        menu.style.display === "block"
-        ? "none"
-        : "block";
-
-}
-
-
-function searchApps(q){
-
-    document.querySelectorAll(".appButton")
-        .forEach(function(button){
-
-            button.style.display =
-                button.innerText
-                    .toLowerCase()
-                    .includes(q.toLowerCase())
-                ? "block"
-                : "none";
-
-        });
-
-}
-
-
-function lockedHouse(){
-
-    document.getElementById("startMenu").style.display =
-        "none";
-
-    notify(
-        "🔒 The house is not entered from the Start Menu. " +
-        "Open Settings."
+    camera = new THREE.PerspectiveCamera(
+        70,
+        innerWidth/innerHeight,
+        0.1,
+        500
     );
 
-    openApp("settings");
+    camera.position.set(
+        player.x,
+        player.y,
+        player.z
+    );
 
+
+    renderer = new THREE.WebGLRenderer({
+        antialias:true
+    });
+
+    renderer.setSize(innerWidth,innerHeight);
+
+    renderer.setPixelRatio(
+        Math.min(devicePixelRatio,2)
+    );
+
+    document.getElementById("game").appendChild(renderer.domElement);
+
+
+    clock = new THREE.Clock();
+
+
+    const ambient = new THREE.HemisphereLight(
+        0xdff5ff,
+        0x3a4650,
+        2.2
+    );
+
+    scene.add(ambient);
+
+
+    const sun = new THREE.DirectionalLight(
+        0xffffff,
+        2
+    );
+
+    sun.position.set(20,40,10);
+
+    scene.add(sun);
+
+
+    createGround();
+
+    createMainArea();
+
+    createLaptop();
+
+    createTrees();
+
+    createHouse();
+
+
+    window.addEventListener("resize",onResize);
+
+    document.addEventListener("keydown",onKeyDown);
+
+    document.addEventListener("keyup",e=>{
+        keys[e.key.toLowerCase()] = false;
+    });
+
+    renderer.domElement.addEventListener(
+        "click",
+        ()=>{
+            if(started && !paused){
+                renderer.domElement.requestPointerLock();
+            }
+        }
+    );
+
+    document.addEventListener(
+        "mousemove",
+        onMouseMove
+    );
+
+
+    animate();
 }
 
 
-/* =========================================================
-BATTERY
-========================================================= */
+function createGround(){
 
-function batteryDrain(amount){
+    const geo = new THREE.PlaneGeometry(
+        300,
+        300
+    );
 
-    if(!gameStarted)return;
+    const mat = new THREE.MeshStandardMaterial({
+        color:0x47744c
+    });
 
-    battery -= amount;
+    const ground = new THREE.Mesh(
+        geo,
+        mat
+    );
 
-    battery = Math.max(0,battery);
+    ground.rotation.x=-Math.PI/2;
 
-    updateBattery();
+    scene.add(ground);
+}
 
-    if(battery <= 20 && battery > 0){
 
-        notify(
-            "⚠️ Battery low! Search the house for the charger."
+function box(
+    x,y,z,
+    sx,sy,sz,
+    color,
+    name
+){
+
+    const geo = new THREE.BoxGeometry(
+        sx,sy,sz
+    );
+
+    const mat = new THREE.MeshStandardMaterial({
+        color:color
+    });
+
+    const mesh = new THREE.Mesh(
+        geo,
+        mat
+    );
+
+    mesh.position.set(x,y,z);
+
+    mesh.userData.name=name || "";
+
+    scene.add(mesh);
+
+    objects.push(mesh);
+
+    return mesh;
+}
+
+
+function createMainArea(){
+
+    box(
+        0,1,-8,
+        14,2,10,
+        0x78858c,
+        "Main Building"
+    );
+
+    box(
+        0,2,-13,
+        5,4,0.5,
+        0x29343a,
+        "Building Wall"
+    );
+
+    box(
+        -4,1,-13,
+        1.5,2,0.5,
+        0x29343a,
+        "Building Wall"
+    );
+
+    box(
+        4,1,-13,
+        1.5,2,0.5,
+        0x29343a,
+        "Building Wall"
+    );
+
+
+    // Laptop table
+
+    box(
+        0,1,3,
+        5,0.5,2.5,
+        0x6b4630,
+        "Laptop Table"
+    );
+
+
+    // laptop
+
+    const base = box(
+        0,1.5,3,
+        2.5,0.15,1.7,
+        0x202a30,
+        "Laptop"
+    );
+
+    const screen = box(
+        0,2.35,2.35,
+        2.5,1.5,0.15,
+        0x111b21,
+        "Laptop Screen"
+    );
+
+    screen.rotation.x=-0.12;
+}
+
+
+function createLaptop(){
+
+    const glow = new THREE.PointLight(
+        0x32c7ff,
+        3,
+        12
+    );
+
+    glow.position.set(0,3,2.3);
+
+    scene.add(glow);
+}
+
+
+function createTrees(){
+
+    for(let i=0;i<35;i++){
+
+        const x =
+            (Math.random()*2-1)*100;
+
+        const z =
+            (Math.random()*2-1)*100;
+
+        if(Math.abs(x)<18 && Math.abs(z)<18)
+            continue;
+
+        const trunk = box(
+            x,2,z,
+            0.7,4,0.7,
+            0x5b3c24,
+            "Tree"
         );
 
+        const crownGeo =
+            new THREE.SphereGeometry(2.5,12,10);
+
+        const crownMat =
+            new THREE.MeshStandardMaterial({
+                color:0x235b35
+            });
+
+        const crown =
+            new THREE.Mesh(
+                crownGeo,
+                crownMat
+            );
+
+        crown.position.set(x,5,z);
+
+        scene.add(crown);
+    }
+}
+
+
+/* -----------------------------
+   HOUSE
+----------------------------- */
+
+function createHouse(){
+
+    // house body
+
+    box(
+        30,3,-15,
+        18,6,14,
+        0xb8a17c,
+        "House"
+    );
+
+    // roof
+
+    const roofGeo =
+        new THREE.ConeGeometry(
+            13,
+            6,
+            4
+        );
+
+    const roofMat =
+        new THREE.MeshStandardMaterial({
+            color:0x57352c
+        });
+
+    const roof =
+        new THREE.Mesh(
+            roofGeo,
+            roofMat
+        );
+
+    roof.position.set(
+        30,9,-15
+    );
+
+    roof.rotation.y=Math.PI/4;
+
+    scene.add(roof);
+
+
+    // door
+
+    box(
+        30,1.5,-22.1,
+        3,3,0.4,
+        0x39251e,
+        "House Door"
+    );
+
+
+    // objects inside / around house
+
+    const desk = box(
+        25,1,-14,
+        4,2,1.5,
+        0x70482d,
+        "Living Room Desk"
+    );
+
+    const cabinet = box(
+        36,2,-14,
+        2,4,2,
+        0x6a452c,
+        "Cabinet"
+    );
+
+    const charger = box(
+        33,0.4,-19,
+        0.8,0.2,0.8,
+        0xdddddd,
+        "Charger"
+    );
+
+    charger.visible=false;
+
+    const computer = box(
+        30,1.8,-10,
+        3,2,1.5,
+        0x22272b,
+        "Old Computer"
+    );
+
+    houseObjects.push(
+        desk,
+        cabinet,
+        charger,
+        computer
+    );
+
+
+    // mark state
+
+    desk.checked=false;
+    cabinet.checked=false;
+    charger.checked=false;
+    computer.checked=false;
+}
+
+
+/* -----------------------------
+   INPUT
+----------------------------- */
+
+function onKeyDown(e){
+
+    const key=e.key.toLowerCase();
+
+    keys[key]=true;
+
+    if(
+        key===" " &&
+        started &&
+        !paused
+    ){
+
+        if(player.grounded){
+
+            player.vy=0.22;
+            player.grounded=false;
+
+        }
     }
 
-    if(battery <= 0){
 
-        powerOff();
+    if(key==="e" && started && !paused){
+
+        interact();
 
     }
 
+
+    if(key==="l" && started){
+
+        openLaptop();
+
+    }
+
+
+    if(key==="escape" && started){
+
+        togglePause();
+
+    }
+}
+
+
+function onMouseMove(e){
+
+    if(
+        document.pointerLockElement !== renderer.domElement
+    )
+        return;
+
+    if(!started || paused)
+        return;
+
+    yaw -= e.movementX*0.0025;
+
+    pitch -= e.movementY*0.0025;
+
+    pitch=Math.max(
+        -1.2,
+        Math.min(1.2,pitch)
+    );
+}
+
+
+function updatePlayer(){
+
+    if(!started || paused || inHouse)
+        return;
+
+
+    let forward=0;
+    let strafe=0;
+
+    if(keys["arrowup"])
+        forward+=1;
+
+    if(keys["arrowdown"])
+        forward-=1;
+
+    if(keys["arrowleft"])
+        strafe-=1;
+
+    if(keys["arrowright"])
+        strafe+=1;
+
+
+    const len=Math.hypot(
+        forward,
+        strafe
+    );
+
+    if(len>0){
+
+        forward/=len;
+        strafe/=len;
+
+        const speed=player.speed;
+
+        player.x +=
+            (
+                Math.sin(yaw)*forward +
+                Math.cos(yaw)*strafe
+            )*speed;
+
+        player.z +=
+            (
+                Math.cos(yaw)*forward -
+                Math.sin(yaw)*strafe
+            )*speed;
+
+    }
+
+
+    player.vy-=0.012;
+
+    player.y+=player.vy;
+
+    if(player.y<=2){
+
+        player.y=2;
+        player.vy=0;
+        player.grounded=true;
+
+    }
+
+
+    camera.position.set(
+        player.x,
+        player.y,
+        player.z
+    );
+
+    camera.rotation.order="YXZ";
+
+    camera.rotation.y=yaw;
+
+    camera.rotation.x=pitch;
+
+
+    // battery slowly drains
+
+    if(started && battery>0){
+
+        battery -= 0.0015;
+
+        updateBattery();
+
+    }
+
+    if(
+        battery<=0 &&
+        !chargerFound
+    ){
+
+        battery=0;
+
+        if(!inHouse && mission>=12){
+
+            notify(
+                "🔋 Battery empty! Use Settings to enter the house and search for the charger."
+            );
+
+        }
+
+    }
+
+
+    findNearbyObject();
 }
 
 
 function updateBattery(){
 
-    document.getElementById("batteryText").innerText =
-        Math.round(battery) + "%";
+    const b=Math.max(
+        0,
+        Math.floor(battery)
+    );
 
-    document.getElementById("batteryFill").style.width =
-        battery + "%";
+    document.getElementById(
+        "batteryText"
+    ).textContent="🔋 "+b+"%";
 
-    document.getElementById("batteryFill").style.background =
-        battery <= 20 ? "red" : "#39dc69";
-
-}
-
-
-/* Battery slowly drains */
-
-setInterval(function(){
-
-    if(
-        gameStarted &&
-        document.getElementById("game").style.display === "block"
-    ){
-
-        batteryDrain(0.08);
-
-    }
-
-},5000);
+    document.getElementById(
+        "batteryFill"
+    ).style.width=b+"%";
 
 
-/* =========================================================
-SETTINGS / HOUSE DOOR
-========================================================= */
+    if(b<20){
 
-function updateSettings(){
+        document.getElementById(
+            "batteryFill"
+        ).style.background="#e84b4b";
 
-    const status =
-        document.getElementById("houseStatus");
+    }else if(b<50){
 
-    const button =
-        document.getElementById("enterHouse");
-
-    if(mission >= 7){
-
-        houseUnlocked = true;
-
-        status.innerHTML =
-            "🏠 <b>House access unlocked.</b><br>" +
-            "Settings is the official doorway to the house.";
-
-        button.innerText =
-            "🏠 Enter House";
+        document.getElementById(
+            "batteryFill"
+        ).style.background="#f2c94c";
 
     }else{
 
-        houseUnlocked = false;
-
-        status.innerHTML =
-            "🔒 Complete Missions 1–6 before entering the house.";
-
-        button.innerText =
-            "🔒 Enter House";
-
+        document.getElementById(
+            "batteryFill"
+        ).style.background="#45e68a";
     }
-
 }
 
 
-/*
-    THIS IS THE ONLY NORMAL DOORWAY TO THE HOUSE.
-*/
+/* -----------------------------
+   NEARBY OBJECT
+----------------------------- */
 
-function enterHouse(){
+function findNearbyObject(){
 
-    if(mission < 7){
+    nearObject=null;
 
-        notify(
-            "🔒 House locked. Complete Missions 1–6 first."
+    let closest=999;
+
+    const all=[
+        ...objects,
+        ...houseObjects
+    ];
+
+    for(const obj of all){
+
+        if(!obj.visible)
+            continue;
+
+        const d =
+            camera.position.distanceTo(
+                obj.position
+            );
+
+        if(d<4 && d<closest){
+
+            closest=d;
+            nearObject=obj;
+
+        }
+    }
+
+
+    const hint=
+        document.getElementById(
+            "interactHint"
         );
 
-        return;
+    if(nearObject){
+
+        hint.classList.add("show");
+
+        hint.innerHTML=
+            "Press <b>E</b> to interact with <b>"+
+            nearObject.userData.name+
+            "</b>";
+
+    }else{
+
+        hint.classList.remove("show");
 
     }
-
-    closeApp("settings");
-
-    document.getElementById("game").style.display =
-        "none";
-
-    document.getElementById("house").style.display =
-        "block";
-
-    houseActive = true;
-
-    initHouse();
-
-
-    if(mission === 7){
-
-        completeMission();
-
-    }
-
 }
 
 
-/* =========================================================
-POWER OFF
-========================================================= */
+/* -----------------------------
+   INTERACTION
+----------------------------- */
 
-function powerOff(){
+function interact(){
 
-    document.getElementById("game").style.display =
-        "none";
+    if(!nearObject){
 
-    document.getElementById("powerOff").style.display =
-        "flex";
-
-}
-
-
-function emergencyHouseSearch(){
-
-    document.getElementById("powerOff").style.display =
-        "none";
-
-    document.getElementById("house").style.display =
-        "block";
-
-    houseActive = true;
-
-    initHouse();
-
-    notify(
-        "🔋 Battery empty. Search the house for the charger."
-    );
-
-}
-
-
-/* =========================================================
-RETURN TO LAPTOP
-========================================================= */
-
-function returnLaptop(){
-
-    if(!chargerFound){
-
-        notify(
-            "🔌 You still need to find the charger."
-        );
+        notify("🔎 Nothing nearby.");
 
         return;
-
     }
 
-    document.getElementById("house").style.display =
-        "none";
 
-    document.getElementById("game").style.display =
-        "block";
+    const name=
+        nearObject.userData.name;
 
-    houseActive = false;
 
-    battery = 100;
+    /* LAPTOP */
+
+    if(
+        name==="Laptop" ||
+        name==="Laptop Screen"
+    ){
+
+        desktopInspected=true;
+
+        openLaptop();
+
+        checkMission();
+
+        return;
+    }
+
+
+    /* HOUSE DOOR */
+
+    if(name==="House Door"){
+
+        if(!settingsUsed){
+
+            notify(
+                "🔒 The house is locked. Settings is the official doorway."
+            );
+
+            return;
+        }
+
+        enterHouse();
+
+        return;
+    }
+
+
+    /* HOUSE OBJECTS */
+
+    if(inHouse){
+
+        if(name==="Living Room Desk"){
+
+            nearObject.checked=true;
+
+            notify(
+                "🪑 You inspected the living room desk."
+            );
+
+            checkMission();
+
+            return;
+        }
+
+
+        if(name==="Cabinet"){
+
+            nearObject.checked=true;
+
+            // Reveal charger
+
+            const charger=
+                houseObjects.find(
+                    o=>o.userData.name==="Charger"
+                );
+
+            if(charger)
+                charger.visible=true;
+
+            notify(
+                "🗄️ Cabinet searched. Something may be nearby."
+            );
+
+            checkMission();
+
+            return;
+        }
+
+
+        if(name==="Charger"){
+
+            chargerFound=true;
+
+            nearObject.checked=true;
+
+            battery=100;
+
+            notify(
+                "🔌 CHARGER FOUND! Battery restored to 100%."
+            );
+
+            checkMission();
+
+            return;
+        }
+
+
+        if(name==="Old Computer"){
+
+            nearObject.checked=true;
+
+            oldComputerInspected=true;
+
+            if(mission===17){
+
+                notify(
+                    "💻 Old computer investigated!"
+                );
+
+                checkMission();
+
+                return;
+            }
+
+
+            if(mission===20){
+
+                finalInvestigation=true;
+
+                notify(
+                    "🔍 FINAL INVESTIGATION COMPLETE!"
+                );
+
+                checkMission();
+
+                return;
+            }
+
+
+            notify(
+                "💻 The old computer contains mysterious information."
+            );
+
+            return;
+        }
+    }
+}
+
+
+/* -----------------------------
+   START
+----------------------------- */
+
+function startGame(){
+
+    document.getElementById(
+        "rulesScreen"
+    ).style.display="none";
+
+    started=true;
+
+    mission=1;
+
+    updateMissionUI();
 
     updateBattery();
 
-
-    if(mission === 11){
-
-        completeMission();
-
-    }
-
-}
-
-
-/* =========================================================
-BROWSER
-========================================================= */
-
-function browserSearch(){
-
-    const q =
-        document.getElementById("browserInput")
-        .value
-        .toLowerCase();
-
-    const page =
-        document.getElementById("browserPage");
-
-
-    if(q.includes("charger")){
-
-        page.innerHTML = `
-            <h1>🔌 Charger Search</h1>
-            <p>
-                The missing charger is somewhere inside the house.
-            </p>
-            <p>
-                Check desks, cabinets and the old computer.
-            </p>
-        `;
-
-    }
-
-    else if(q.includes("virus")){
-
-        page.innerHTML = `
-            <h1>🦠 Virus Information</h1>
-            <p>
-                Use MS Security to scan the laptop.
-            </p>
-            <p>
-                Then quarantine suspicious files.
-            </p>
-        `;
-
-    }
-
-    else if(q.includes("house")){
-
-        page.innerHTML = `
-            <h1>🏠 House Investigation</h1>
-            <p>
-                The house contains important clues.
-            </p>
-            <p>
-                Settings is the official doorway.
-            </p>
-        `;
-
-    }
-
-    else if(q.includes("mystery")){
-
-        page.innerHTML = `
-            <h1>🕵️ Mystery</h1>
-            <p>
-                The old computer in the house is connected
-                to the hidden system.
-            </p>
-        `;
-
-        if(mission === 19){
-
-            completeMission();
-
-        }
-
-    }
-
-    else{
-
-        page.innerHTML = `
-            <h1>MS Search</h1>
-            <p>
-                No useful results.
-            </p>
-            <p>
-                Try charger, virus, house or mystery.
-            </p>
-        `;
-
-    }
-
-}
-
-
-/* =========================================================
-SECURITY
-========================================================= */
-
-function scanSystem(){
-
-    const result =
-        document.getElementById("scanResult");
-
-    result.innerHTML =
-        "🔍 Scanning system...";
-
-
-    setTimeout(function(){
-
-        result.innerHTML = `
-
-            ⚠️ Threat detected:
-            <b>unknown.exe</b>
-
-            <br>
-
-            Recommended action:
-            quarantine the file.
-
-            <br><br>
-
-            <button
-                class="quarantine"
-                onclick="quarantineVirus()"
-            >
-                🛡️ QUARANTINE
-            </button>
-
-        `;
-
-
-        if(mission === 3){
-
-            completeMission();
-
-        }
-
-    },1000);
-
-}
-
-
-/*
-    NEW QUARANTINE FUNCTION
-*/
-
-function quarantineVirus(){
-
-    if(virusRemoved){
-
-        document.getElementById("scanResult").innerHTML = `
-            ✅ <b>unknown.exe</b> is already quarantined.
-        `;
-
-        return;
-
-    }
-
-
-    virusRemoved = true;
-
-
-    document.getElementById("securityStatus").innerText =
-        "Protected — No threats";
-
-
-    document.getElementById("scanResult").innerHTML = `
-
-        🛡️ <b>Threat quarantined successfully!</b>
-
-        <br>
-
-        unknown.exe has been moved to quarantine.
-
-        <br><br>
-
-        <span style="color:green">
-            ✅ Your laptop is protected.
-        </span>
-
-    `;
-
+    initWorld();
 
     notify(
-        "🛡️ unknown.exe quarantined!"
+        "🎯 Mission 1: Find the laptop."
     );
 
-
-    if(mission === 4){
-
-        completeMission();
-
-    }
-
 }
 
 
-function showVirusFile(){
+/* -----------------------------
+   LAPTOP UI
+----------------------------- */
 
-    if(virusRemoved){
+function openLaptop(){
 
-        alert(
-            "unknown.exe\n\n" +
-            "🛡️ This file has been quarantined."
-        );
-
-    }else{
-
-        alert(
-            "unknown.exe\n\n" +
-            "⚠️ Suspicious file detected.\n\n" +
-            "Use MS Security to scan and quarantine it."
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-TERMINAL
-========================================================= */
-
-function terminalKey(e){
-
-    if(e.key !== "Enter")
+    if(!started)
         return;
 
-    const input =
-        document.getElementById("terminalInput");
+    document.getElementById(
+        "laptopUI"
+    ).style.display="block";
 
-    const cmd =
-        input.value.trim().toLowerCase();
-
-    const output =
-        document.getElementById("terminalOutput");
-
-
-    output.textContent +=
-        "\nC:\\Users\\Player> " +
-        cmd +
-        "\n";
-
-
-    if(cmd === "help"){
-
-        output.textContent +=
-            "Commands:\n" +
-            "help\n" +
-            "status\n" +
-            "battery\n" +
-            "secret\n" +
-            "house\n" +
-            "clear\n";
-
-    }
-
-    else if(cmd === "status"){
-
-        output.textContent +=
-            "System: MS OS\n" +
-            "Security: ACTIVE\n" +
-            "Battery: " +
-            Math.round(battery) +
-            "%\n";
-
-        if(mission === 5){
-
-            completeMission();
-
-        }
-
-    }
-
-    else if(cmd === "battery"){
-
-        output.textContent +=
-            "Battery level: " +
-            Math.round(battery) +
-            "%\n";
-
-        if(mission === 6){
-
-            completeMission();
-
-        }
-
-    }
-
-    else if(cmd === "secret"){
-
-        output.textContent +=
-            "SECRET SYSTEM FOUND.\n" +
-            "Access code: LAPTOP-204\n";
-
-        secretUnlocked = true;
-
-
-        if(mission === 18){
-
-            completeMission();
-
-        }
-
-    }
-
-    else if(cmd === "house"){
-
-        output.textContent +=
-            "House access is controlled through Settings.\n";
-
-    }
-
-    else if(cmd === "clear"){
-
-        output.textContent = "";
-
-    }
-
-    else{
-
-        output.textContent +=
-            "Unknown command. Type help.\n";
-
-    }
-
-
-    input.value = "";
+    showApp("desktop");
 
 }
 
 
-/* =========================================================
-FILES
-========================================================= */
+function closeLaptop(){
 
-function openMissionFile(){
+    document.getElementById(
+        "laptopUI"
+    ).style.display="none";
 
-    alert(
-        "mission.txt\n\n" +
-        "The charger is not lost.\n" +
-        "It was moved into the house.\n" +
-        "Look near the old computer."
+    laptopMinimized=false;
+
+}
+
+
+function minimizeLaptop(){
+
+    laptopMinimized=true;
+
+    document.getElementById(
+        "laptopUI"
+    ).style.display="none";
+
+    notify(
+        "💻 Laptop minimized."
+    );
+}
+
+
+function maximizeLaptop(){
+
+    laptopMaximized=true;
+
+    const ui=
+        document.getElementById(
+            "laptopUI"
+        );
+
+    ui.style.inset="0";
+
+    notify(
+        "⬜ Laptop maximized."
+    );
+}
+
+
+function restoreLaptop(){
+
+    laptopMaximized=false;
+
+    const ui=
+        document.getElementById(
+            "laptopUI"
+        );
+
+    ui.style.inset="0";
+
+    notify(
+        "◱ Laptop restored."
+    );
+}
+
+
+function showApp(app){
+
+    const content=
+        document.getElementById(
+            "appContent"
+        );
+
+    if(app==="desktop"){
+
+        document.getElementById(
+            "windowTitle"
+        ).textContent="💻 MS OS";
+
+        content.innerHTML=`
+
+            <div class="desktop">
+
+                <div
+                    class="desktopIcon"
+                    style="left:35px;top:35px"
+                    onclick="showApp('security')">
+
+                    <div class="icon">🛡️</div>
+                    <div>MS Security</div>
+
+                </div>
+
+                <div
+                    class="desktopIcon"
+                    style="left:35px;top:140px"
+                    onclick="showApp('files')">
+
+                    <div class="icon">📁</div>
+                    <div>Files</div>
+
+                </div>
+
+                <div
+                    class="desktopIcon"
+                    style="left:145px;top:35px"
+                    onclick="showApp('ai')">
+
+                    <div class="icon">🤖</div>
+                    <div>AI Helper</div>
+
+                </div>
+
+                <div
+                    class="desktopIcon"
+                    style="left:145px;top:140px"
+                    onclick="showApp('settings')">
+
+                    <div class="icon">⚙️</div>
+                    <div>Settings</div>
+
+                </div>
+
+                <div
+                    class="desktopIcon"
+                    style="left:255px;top:35px"
+                    onclick="showApp('terminal')">
+
+                    <div class="icon">⌨️</div>
+                    <div>Terminal</div>
+
+                </div>
+
+                <div class="taskbar">
+
+                    <button onclick="showApp('desktop')">
+                        🪟
+                    </button>
+
+                    <button onclick="showApp('security')">
+                        🛡️
+                    </button>
+
+                    <button onclick="showApp('files')">
+                        📁
+                    </button>
+
+                    <button onclick="showApp('ai')">
+                        🤖
+                    </button>
+
+                    <button onclick="showApp('settings')">
+                        ⚙️
+                    </button>
+
+                    <button onclick="showApp('terminal')">
+                        ⌨️
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+        if(mission===2){
+
+            desktopInspected=true;
+
+            setTimeout(checkMission,100);
+
+        }
+
+        return;
+    }
+
+
+    if(app==="security"){
+
+        document.getElementById(
+            "windowTitle"
+        ).textContent="🛡️ MS Security";
+
+        content.innerHTML=`
+
+            <div class="card">
+
+                <h2>🛡️ Antivirus</h2>
+
+                <p>
+                    Real-time protection:
+                    <span class="good">ON</span>
+                </p>
+
+                <p>
+                    System:
+                    <span class="good">Protected</span>
+                </p>
+
+            </div>
+
+            <div class="card">
+
+                <h2>Virus & Threat Protection</h2>
+
+                <button
+                    class="blueButton"
+                    onclick="runSecurityScan()">
+                    🔍 Scan Now
+                </button>
+
+                <div id="securityResult"
+                     style="margin-top:20px">
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    if(app==="files"){
+
+        document.getElementById(
+            "windowTitle"
+        ).textContent="📁 Files";
+
+        content.innerHTML=`
+
+            <div class="card">
+
+                <h2>📁 This Laptop</h2>
+
+                <div class="fileRow">
+                    <span>📄 mission_notes.txt</span>
+                    <span>Safe</span>
+                </div>
+
+                <div class="fileRow">
+                    <span>🖼️ house_map.png</span>
+                    <span>Safe</span>
+                </div>
+
+                <div class="fileRow">
+                    <span>⚠️ unknown.exe</span>
+                    <span class="bad">
+                        Suspicious
+                    </span>
+                </div>
+
+                <div class="fileRow">
+                    <span>📄 final_report.txt</span>
+                    <span>Locked</span>
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <button
+                    class="blueButton"
+                    onclick="inspectFiles()">
+                    🔎 Inspect Files
+                </button>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    if(app==="ai"){
+
+        document.getElementById(
+            "windowTitle"
+        ).textContent="🤖 AI Helper";
+
+        content.innerHTML=`
+
+            <div class="card">
+
+                <h2>🤖 AI Helper</h2>
+
+                <div class="aiMessage">
+                    Hello! I am the laptop's AI Helper.
+                    I can give you mission hints.
+                </div>
+
+                <button
+                    class="blueButton"
+                    onclick="askAI()">
+                    💡 Get Help
+                </button>
+
+                <div
+                    id="aiAnswer"
+                    style="margin-top:15px">
+                </div>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    if(app==="settings"){
+
+        document.getElementById(
+            "windowTitle"
+        ).textContent="⚙️ Settings";
+
+        content.innerHTML=`
+
+            <div class="card">
+
+                <h2>⚙️ Settings</h2>
+
+                <p>
+                    System settings and game doorway.
+                </p>
+
+                <button
+                    class="blueButton"
+                    onclick="useSettings()">
+                    ⚙️ Use Settings
+                </button>
+
+            </div>
+
+            <div class="card">
+
+                <h2>🏠 House Access</h2>
+
+                <p>
+                    <b>Settings is the official doorway
+                    to the house.</b>
+                </p>
+
+                <button
+                    class="blueButton"
+                    onclick="enterHouseFromSettings()">
+                    🏠 Enter House
+                </button>
+
+            </div>
+
+            <div class="card">
+
+                <h2>🔋 Power</h2>
+
+                <p>
+                    Current battery:
+                    <b>${Math.floor(battery)}%</b>
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    if(app==="terminal"){
+
+        document.getElementById(
+            "windowTitle"
+        ).textContent="⌨️ Terminal";
+
+        content.innerHTML=`
+
+            <div class="card">
+
+                <h2>⌨️ MS Terminal</h2>
+
+                <div id="terminal">
+
+                    MS OS Terminal v1.0<br>
+                    Type "help" for commands.<br><br>
+
+                    <span id="terminalOutput">
+                    </span>
+
+                </div>
+
+                <input
+                    id="terminalInput"
+                    placeholder="Type a command..."
+                    onkeydown="terminalCommand(event)"
+                >
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    if(app==="missions"){
+
+        document.getElementById(
+            "windowTitle"
+        ).textContent="🎯 Missions";
+
+        let html=`
+            <div class="card">
+            <h2>🎯 Mission List</h2>
+            <div id="missionList">
+        `;
+
+        missions.forEach((m,i)=>{
+
+            const num=i+1;
+
+            let cls="missionItem";
+
+            if(num<mission)
+                cls+=" done";
+
+            if(num===mission)
+                cls+=" current";
+
+            html+=`
+                <div class="${cls}">
+                    <b>Mission ${num}</b><br>
+                    ${m.name}
+                </div>
+            `;
+
+        });
+
+        html+=`
+            </div>
+            </div>
+        `;
+
+        content.innerHTML=html;
+
+        return;
+    }
+
+}
+
+
+/* -----------------------------
+   SECURITY
+----------------------------- */
+
+function runSecurityScan(){
+
+    const result=
+        document.getElementById(
+            "securityResult"
+        );
+
+    result.innerHTML=`
+        <p>🔍 Scanning...</p>
+    `;
+
+    setTimeout(()=>{
+
+        scanDone=true;
+
+        result.innerHTML=`
+
+            <div class="card">
+
+                <p>
+                    ⚠️ Threat detected:
+                    <b>unknown.exe</b>
+                </p>
+
+                <p>
+                    Recommended action:
+                    quarantine the file.
+                </p>
+
+                <button
+                    class="dangerButton"
+                    onclick="quarantineThreat()">
+                    🗃️ Quarantine
+                </button>
+
+            </div>
+        `;
+
+        notify(
+            "⚠️ Threat detected: unknown.exe"
+        );
+
+        checkMission();
+
+    },1200);
+}
+
+
+function quarantineThreat(){
+
+    virusQuarantined=true;
+
+    document.getElementById(
+        "securityResult"
+    ).innerHTML=`
+
+        <div class="card">
+
+            <h3 class="good">
+                ✓ Threat Quarantined
+            </h3>
+
+            <p>
+                unknown.exe has been safely
+                moved to Quarantine.
+            </p>
+
+            <p>
+                System status:
+                <b class="good">Protected</b>
+            </p>
+
+        </div>
+    `;
+
+    notify(
+        "🗃️ unknown.exe moved to Quarantine."
     );
 
-
-    if(mission === 14){
-
-        completeMission();
-
-    }
-
+    checkMission();
 }
 
 
-/* =========================================================
-NOTES
-========================================================= */
+/* -----------------------------
+   FILES
+----------------------------- */
 
-function notesWritten(){
+function inspectFiles(){
 
-    const value =
-        document.getElementById("notesArea")
-        .value
-        .trim();
+    filesInspected=true;
 
+    notify(
+        "📁 Files inspected."
+    );
 
-    if(value && mission === 15){
+    checkMission();
 
-        completeMission();
-
-    }
-
+    showApp("files");
 }
 
 
-/* =========================================================
-AI HELPER
-========================================================= */
-
-function aiKey(e){
-
-    if(e.key === "Enter"){
-
-        askAI();
-
-    }
-
-}
-
+/* -----------------------------
+   AI
+----------------------------- */
 
 function askAI(){
 
-    const input =
-        document.getElementById("aiInput");
+    aiUsed=true;
 
-    const text =
-        input.value.trim();
+    let answer="";
 
+    if(mission<=8){
 
-    if(!text)return;
+        answer=
+            "💡 Hint: Open Settings when you need access to the house.";
 
+    }else if(mission<=12){
 
-    addAI("user",text);
+        answer=
+            "💡 Hint: Search the cabinet. The charger is hidden in the house.";
 
+    }else if(mission<=18){
 
-    const q =
-        text.toLowerCase();
+        answer=
+            "💡 Hint: The old computer is inside the house.";
 
+    }else{
 
-    let answer;
-
-
-    if(q.includes("house")){
-
-        answer =
-            "To enter the house, open Settings. " +
-            "Settings is the official doorway.";
+        answer=
+            "💡 Final hint: Make sure the threat is quarantined, then investigate the old computer.";
 
     }
 
-    else if(q.includes("charger")){
+    document.getElementById(
+        "aiAnswer"
+    ).innerHTML=`
+        <div class="aiMessage">
+            ${answer}
+        </div>
+    `;
 
-        answer =
-            "Search the house carefully. " +
-            "Check the living room, cabinet and old computer.";
+    notify(
+        "🤖 AI Helper gave you a hint."
+    );
 
-    }
-
-    else if(q.includes("battery")){
-
-        answer =
-            'Use Terminal and type "battery" to check your battery.';
-
-    }
-
-    else if(q.includes("mission")){
-
-        answer =
-            "Your current mission is " +
-            mission +
-            ". Read the mission panel for the objective.";
-
-    }
-
-    else if(q.includes("virus")){
-
-        answer =
-            "Open MS Security, scan the system, then press Quarantine.";
-
-    }
-
-    else{
-
-        answer =
-            "Try asking me about the house, charger, battery, virus or mission.";
-
-    }
-
-
-    setTimeout(function(){
-
-        addAI("bot",answer);
-
-    },350);
-
+    checkMission();
 }
 
 
-function addAI(type,text){
+/* -----------------------------
+   SETTINGS
+----------------------------- */
 
-    const box =
-        document.getElementById("aiMessages");
+function useSettings(){
 
-    const div =
-        document.createElement("div");
+    settingsUsed=true;
 
-    div.className =
-        "msg " + type;
+    notify(
+        "⚙️ Settings used. This is the official doorway to the house."
+    );
 
-    div.innerText =
-        text;
-
-    box.appendChild(div);
-
-    box.scrollTop =
-        box.scrollHeight;
-
+    checkMission();
 }
 
 
-/* =========================================================
-3D HOUSE
-========================================================= */
+function enterHouseFromSettings(){
 
-const canvas =
-    document.getElementById("houseCanvas");
+    settingsUsed=true;
 
-const ctx =
-    canvas.getContext("2d");
+    notify(
+        "⚙️ Settings confirmed. Opening the official house doorway..."
+    );
 
+    setTimeout(()=>{
+        enterHouse();
+    },600);
 
-let player = {
-
-    x:0,
-    y:1.6,
-    z:8,
-    angle:0,
-    pitch:0,
-    vy:0
-
-};
-
-
-let keys = {};
-
-let pointerLocked = false;
-
-let lastTime = performance.now();
-
-
-const objects = [
-
-    {
-        x:0,
-        z:0,
-        w:6,
-        d:1,
-        h:3,
-        name:"Living Room Wall"
-    },
-
-    {
-        x:-7,
-        z:-3,
-        w:1,
-        d:8,
-        h:3,
-        name:"Wall"
-    },
-
-    {
-        x:7,
-        z:-3,
-        w:1,
-        d:8,
-        h:3,
-        name:"Wall"
-    },
-
-    {
-        x:0,
-        z:-8,
-        w:15,
-        d:1,
-        h:3,
-        name:"Back Wall"
-    },
-
-    {
-        x:-3,
-        z:2,
-        w:2,
-        d:1,
-        h:1,
-        name:"Living Room Desk"
-    },
-
-    {
-        x:4,
-        z:-4,
-        w:2,
-        d:2,
-        h:1.5,
-        name:"Cabinet"
-    },
-
-    {
-        x:4,
-        z:3,
-        w:2,
-        d:1,
-        h:1,
-        name:"Old Computer"
-    },
-
-    {
-        x:5,
-        z:5,
-        w:1,
-        d:1,
-        h:1,
-        name:"Charger"
-    }
-
-];
-
-
-let nearObject = null;
-
-
-/* =========================================================
-HOUSE RESIZE
-========================================================= */
-
-function resizeHouse(){
-
-    canvas.width =
-        window.innerWidth;
-
-    canvas.height =
-        window.innerHeight;
-
-}
-
-window.addEventListener(
-    "resize",
-    resizeHouse
-);
-
-resizeHouse();
-
-
-/* =========================================================
-HOUSE INIT
-========================================================= */
-
-function initHouse(){
-
-    player.x = 0;
-    player.z = 8;
-    player.angle = 0;
-    player.pitch = 0;
-    player.vy = 0;
-
-    chargerFound = false;
-
-    drawHouse();
-
+    checkMission();
 }
 
 
-/* =========================================================
-MOUSE
-========================================================= */
+function enterHouse(){
 
-document.getElementById("house")
-    .addEventListener("click",function(e){
-
-        if(e.target.id === "returnLaptop")
-            return;
-
-        canvas.requestPointerLock?.();
-
-    });
-
-
-document.addEventListener(
-    "pointerlockchange",
-    function(){
-
-        pointerLocked =
-            document.pointerLockElement === canvas;
-
-    }
-);
-
-
-document.addEventListener(
-    "mousemove",
-    function(e){
-
-        if(!houseActive || !pointerLocked)
-            return;
-
-        player.angle +=
-            e.movementX * 0.0025;
-
-        player.pitch -=
-            e.movementY * 0.002;
-
-        player.pitch =
-            Math.max(
-                -0.7,
-                Math.min(0.7,player.pitch)
-            );
-
-    }
-);
-
-
-/* =========================================================
-HOUSE KEYS
-========================================================= */
-
-document.addEventListener(
-    "keydown",
-    function(e){
-
-        keys[e.key.toLowerCase()] = true;
-
-
-        if(e.code === "Space" && houseActive){
-
-            if(Math.abs(player.y - 1.6) < 0.05){
-
-                player.vy = 5.5;
-
-            }
-
-            e.preventDefault();
-
-        }
-
-
-        if(
-            e.key.toLowerCase() === "e" &&
-            houseActive
-        ){
-
-            interactHouse();
-
-        }
-
-    }
-);
-
-
-document.addEventListener(
-    "keyup",
-    function(e){
-
-        keys[e.key.toLowerCase()] = false;
-
-    }
-);
-
-
-/* =========================================================
-HOUSE MOVEMENT
-========================================================= */
-
-function moveHouse(dt){
-
-    if(!houseActive)
-        return;
-
-
-    let speed =
-        keys["shift"]
-        ? 7
-        : 3.5;
-
-
-    let forward = 0;
-    let side = 0;
-
-
-    if(keys["arrowup"] || keys["w"])
-        forward++;
-
-    if(keys["arrowdown"] || keys["s"])
-        forward--;
-
-    if(keys["arrowleft"] || keys["a"])
-        side--;
-
-    if(keys["arrowright"] || keys["d"])
-        side++;
-
-
-    const sin =
-        Math.sin(player.angle);
-
-    const cos =
-        Math.cos(player.angle);
-
-
-    player.x +=
-        (sin * forward + cos * side)
-        * speed
-        * dt;
-
-
-    player.z +=
-        (cos * forward - sin * side)
-        * speed
-        * dt;
-
-
-    player.x =
-        Math.max(
-            -6.2,
-            Math.min(6.2,player.x)
-        );
-
-
-    player.z =
-        Math.max(
-            -7,
-            Math.min(7,player.z)
-        );
-
-
-    player.vy -=
-        12 * dt;
-
-    player.y +=
-        player.vy * dt;
-
-
-    if(player.y < 1.6){
-
-        player.y = 1.6;
-        player.vy = 0;
-
-    }
-
-}
-
-
-/* =========================================================
-HOUSE INTERACTION
-========================================================= */
-
-function interactHouse(){
-
-    if(!nearObject)
-        return;
-
-
-    if(nearObject.name === "Charger"){
-
-        chargerFound = true;
+    if(!settingsUsed){
 
         notify(
-            "🔌 CHARGER FOUND!"
+            "🔒 You must enter through Settings."
         );
 
-
-        if(mission === 10){
-
-            completeMission();
-
-        }
-
         return;
+    }
+
+    inHouse=true;
+
+    document.getElementById(
+        "laptopUI"
+    ).style.display="none";
+
+    // Move player into house
+
+    player.x=30;
+    player.y=2;
+    player.z=-20;
+
+    camera.position.set(
+        player.x,
+        player.y,
+        player.z
+    );
+
+    notify(
+        "🏠 You entered the house through Settings."
+    );
+
+    checkMission();
+}
+
+
+/* -----------------------------
+   TERMINAL
+----------------------------- */
+
+function terminalCommand(e){
+
+    if(e.key!=="Enter")
+        return;
+
+    const input=
+        document.getElementById(
+            "terminalInput"
+        );
+
+    const command=
+        input.value.trim().toLowerCase();
+
+    const output=
+        document.getElementById(
+            "terminalOutput"
+        );
+
+    if(command==="help"){
+
+        output.innerHTML+=
+            "<br>Commands: help, status, scan, mission, clear";
+
+    }else if(command==="status"){
+
+        output.innerHTML+=
+            "<br>System: ONLINE | Battery: "+
+            Math.floor(battery)+"%";
+
+    }else if(command==="scan"){
+
+        output.innerHTML+=
+            "<br>Security scan available in MS Security.";
+
+    }else if(command==="mission"){
+
+        output.innerHTML+=
+            "<br>Current mission: "+
+            mission+
+            " — "+
+            missions[mission-1].name;
+
+    }else if(command==="clear"){
+
+        output.innerHTML="";
+
+    }else{
+
+        output.innerHTML+=
+            "<br>Unknown command: "+command;
 
     }
 
+    terminalUsed=true;
+
+    input.value="";
+
+    checkMission();
+}
+
+
+/* -----------------------------
+   PAUSE
+----------------------------- */
+
+function togglePause(){
+
+    if(!started)
+        return;
+
+    paused=!paused;
+
+    document.getElementById(
+        "pauseScreen"
+    ).style.display =
+        paused ? "flex" : "none";
+
+}
+
+
+/* -----------------------------
+   WIN
+----------------------------- */
+
+function showWinScreen(){
+
+    document.exitPointerLock?.();
+
+    document.getElementById(
+        "game"
+    ).style.display="none";
+
+    document.getElementById(
+        "hud"
+    ).style.display="none";
+
+    document.getElementById(
+        "help"
+    ).style.display="none";
+
+    document.getElementById(
+        "crosshair"
+    ).style.display="none";
+
+    document.getElementById(
+        "interactHint"
+    ).style.display="none";
+
+    document.getElementById(
+        "laptopUI"
+    ).style.display="none";
+
+    document.getElementById(
+        "winScreen"
+    ).style.display="flex";
+
+}
+
+
+/* -----------------------------
+   ANIMATION
+----------------------------- */
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    if(!renderer)
+        return;
+
+    updatePlayer();
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+
+/* -----------------------------
+   RESIZE
+----------------------------- */
+
+function onResize(){
+
+    if(!camera || !renderer)
+        return;
+
+    camera.aspect=
+        innerWidth/innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        innerWidth,
+        innerHeight
+    );
+}
+
+
+/* -----------------------------
+   SPECIAL MISSION LOGIC
+----------------------------- */
+
+setInterval(()=>{
+
+    if(!started || paused)
+        return;
+
+
+    /*
+       Mission 1:
+       Opening the laptop is enough.
+    */
 
     if(
-        nearObject.name ===
-        "Living Room Desk"
+        mission===1 &&
+        desktopInspected
     ){
-
-        notify(
-            "🪑 Living room desk inspected."
-        );
-
-
-        if(mission === 8){
-
-            completeMission();
-
-        }
-
-        return;
-
-    }
-
-
-    if(
-        nearObject.name ===
-        "Cabinet"
-    ){
-
-        notify(
-            "🗄️ Cabinet inspected."
-        );
-
-
-        if(mission === 9){
-
-            completeMission();
-
-        }
-
-        return;
-
-    }
-
-
-    if(
-        nearObject.name ===
-        "Old Computer"
-    ){
-
-        notify(
-            "💻 Old computer found."
-        );
-
-
-        if(mission === 17){
-
-            completeMission();
-
-        }
-
-        return;
-
-    }
-
-}
-
-
-/* =========================================================
-3D PROJECTION
-========================================================= */
-
-function project(x,y,z){
-
-    const dx =
-        x - player.x;
-
-    const dz =
-        z - player.z;
-
-
-    const sin =
-        Math.sin(player.angle);
-
-    const cos =
-        Math.cos(player.angle);
-
-
-    const rx =
-        dx * cos -
-        dz * sin;
-
-
-    const rz =
-        dx * sin +
-        dz * cos;
-
-
-    if(rz <= 0.1)
-        return null;
-
-
-    const f =
-        canvas.height * 0.9;
-
-
-    const sx =
-        canvas.width / 2 +
-        rx / rz * f;
-
-
-    const sy =
-        canvas.height / 2 -
-        (y - player.y) / rz * f +
-        player.pitch *
-        canvas.height;
-
-
-    return {
-        x:sx,
-        y:sy,
-        z:rz
-    };
-
-}
-
-
-/* =========================================================
-DRAW BOX
-========================================================= */
-
-function drawBox(o){
-
-    const p1 =
-        project(
-            o.x-o.w/2,
-            0,
-            o.z-o.d/2
-        );
-
-    const p2 =
-        project(
-            o.x+o.w/2,
-            0,
-            o.z-o.d/2
-        );
-
-    const p3 =
-        project(
-            o.x+o.w/2,
-            o.h,
-            o.z-o.d/2
-        );
-
-    const p4 =
-        project(
-            o.x-o.w/2,
-            o.h,
-            o.z-o.d/2
-        );
-
-
-    const q1 =
-        project(
-            o.x-o.w/2,
-            0,
-            o.z+o.d/2
-        );
-
-    const q2 =
-        project(
-            o.x+o.w/2,
-            0,
-            o.z+o.d/2
-        );
-
-    const q3 =
-        project(
-            o.x+o.w/2,
-            o.h,
-            o.z+o.d/2
-        );
-
-    const q4 =
-        project(
-            o.x-o.w/2,
-            o.h,
-            o.z+o.d/2
-        );
-
-
-    if(
-        !p1 ||
-        !p2 ||
-        !p3 ||
-        !p4 ||
-        !q1 ||
-        !q2 ||
-        !q3 ||
-        !q4
-    ){
-
-        return;
-
-    }
-
-
-    ctx.fillStyle =
-        "#7d8b96";
-
-    polygon([
-        p1,p2,p3,p4
-    ]);
-
-
-    ctx.fillStyle =
-        "#697780";
-
-    polygon([
-        q1,q2,q3,q4
-    ]);
-
-
-    ctx.fillStyle =
-        "#586670";
-
-    polygon([
-        p4,p3,q3,q4
-    ]);
-
-    polygon([
-        p1,q1,q4,p4
-    ]);
-
-    polygon([
-        p2,q2,q3,p3
-    ]);
-
-}
-
-
-/* =========================================================
-POLYGON
-========================================================= */
-
-function polygon(points){
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        points[0].x,
-        points[0].y
-    );
-
-
-    for(
-        let i=1;
-        i<points.length;
-        i++
-    ){
-
-        ctx.lineTo(
-            points[i].x,
-            points[i].y
-        );
-
-    }
-
-
-    ctx.closePath();
-
-    ctx.fill();
-
-}
-
-
-/* =========================================================
-DRAW HOUSE
-========================================================= */
-
-function drawHouse(){
-
-    if(!houseActive)
-        return;
-
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    const sky =
-        ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            canvas.height
-        );
-
-
-    sky.addColorStop(
-        0,
-        "#16283c"
-    );
-
-    sky.addColorStop(
-        .55,
-        "#7e9db3"
-    );
-
-    sky.addColorStop(
-        .56,
-        "#30383c"
-    );
-
-    sky.addColorStop(
-        1,
-        "#16191b"
-    );
-
-
-    ctx.fillStyle = sky;
-
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    /* Floor grid */
-
-    for(let i=-20;i<=20;i++){
-
-        const p =
-            project(i,0,-15);
-
-        const q =
-            project(i,0,15);
-
-
-        if(p && q){
-
-            ctx.strokeStyle =
-                "#4d5559";
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                p.x,
-                p.y
-            );
-
-            ctx.lineTo(
-                q.x,
-                q.y
-            );
-
-            ctx.stroke();
-
-        }
-
-    }
-
-
-    for(
-        let z=-15;
-        z<=15;
-        z++
-    ){
-
-        const p =
-            project(-15,0,z);
-
-        const q =
-            project(15,0,z);
-
-
-        if(p && q){
-
-            ctx.strokeStyle =
-                "#4d5559";
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                p.x,
-                p.y
-            );
-
-            ctx.lineTo(
-                q.x,
-                q.y
-            );
-
-            ctx.stroke();
-
-        }
-
-    }
-
-
-    /* Objects */
-
-    objects
-        .slice()
-        .sort(function(a,b){
-
-            const da =
-                (a.x-player.x)**2 +
-                (a.z-player.z)**2;
-
-            const db =
-                (b.x-player.x)**2 +
-                (b.z-player.z)**2;
-
-            return db-da;
-
-        })
-        .forEach(drawBox);
-
-
-    /* Find nearby objects */
-
-    nearObject = null;
-
-    let closest = 999;
-
-
-    for(const o of objects){
-
-        if(
-            o.name.includes("Desk") ||
-            o.name === "Cabinet" ||
-            o.name === "Old Computer" ||
-            o.name === "Charger"
-        ){
-
-            const d =
-                Math.hypot(
-                    player.x-o.x,
-                    player.z-o.z
-                );
-
-
-            if(
-                d < 2 &&
-                d < closest
-            ){
-
-                closest = d;
-                nearObject = o;
-
-            }
-
-        }
-
-    }
-
-
-    document.getElementById("houseInfo").innerText =
-        nearObject
-        ? "Press E — " + nearObject.name
-        : "Explore the house.";
-
-}
-
-
-/* =========================================================
-HOUSE LOOP
-========================================================= */
-
-function houseLoop(now){
-
-    const dt =
-        Math.min(
-            0.05,
-            (now-lastTime)/1000
-        );
-
-
-    lastTime = now;
-
-
-    if(houseActive){
-
-        moveHouse(dt);
-
-        drawHouse();
-
-    }
-
-
-    requestAnimationFrame(houseLoop);
-
-}
-
-
-requestAnimationFrame(houseLoop);
-
-
-/* =========================================================
-NOTIFICATIONS
-========================================================= */
-
-function notify(text){
-
-    const box =
-        document.getElementById("notice");
-
-
-    const n =
-        document.createElement("div");
-
-
-    n.className = "notice";
-
-    n.innerText = text;
-
-
-    box.appendChild(n);
-
-
-    setTimeout(function(){
-
-        n.remove();
-
-    },3500);
-
-}
-
-
-/* =========================================================
-RESET
-========================================================= */
-
-function resetGame(){
-
-    if(
-        !confirm(
-            "Start a completely new game?"
-        )
-    ){
-
-        return;
-
+        checkMission();
     }
 
 
     /*
-       Reset EVERYTHING.
-       There is no saved mission.
+       Mission 4:
+       Scan.
     */
 
-    mission = 1;
-    battery = 100;
-    virusRemoved = false;
-    chargerFound = false;
-    secretUnlocked = false;
-
-    location.reload();
-
-}
+    if(
+        mission===4 &&
+        scanDone
+    ){
+        checkMission();
+    }
 
 
-/* =========================================================
-CLOCK
-========================================================= */
+    /*
+       Mission 5:
+       Threat has been detected.
+    */
 
-setInterval(function(){
+    if(
+        mission===5 &&
+        scanDone
+    ){
+        checkMission();
+    }
 
-    const d = new Date();
 
-    document.getElementById("clock").innerText =
-        d.toLocaleTimeString(
-            [],
-            {
-                hour:"2-digit",
-                minute:"2-digit"
-            }
-        );
+    /*
+       Mission 6:
+       Quarantine.
+    */
+
+    if(
+        mission===6 &&
+        virusQuarantined
+    ){
+        checkMission();
+    }
+
+
+    /*
+       Mission 9:
+       House.
+    */
+
+    if(
+        mission===9 &&
+        inHouse
+    ){
+        checkMission();
+    }
+
+
+    /*
+       Mission 12:
+       Charger.
+    */
+
+    if(
+        mission===12 &&
+        chargerFound
+    ){
+        checkMission();
+    }
+
+
+    /*
+       Mission 13:
+       Return power.
+    */
+
+    if(
+        mission===13 &&
+        chargerFound &&
+        battery>5
+    ){
+        checkMission();
+    }
+
+
+    /*
+       Mission 14:
+       Battery.
+    */
+
+    if(
+        mission===14 &&
+        battery>20
+    ){
+        checkMission();
+    }
+
+
+    /*
+       Mission 16:
+       System inspection.
+    */
+
+    if(
+        mission===16 &&
+        desktopInspected
+    ){
+        checkMission();
+    }
+
+
+    /*
+       Mission 18.
+    */
+
+    if(
+        mission===18 &&
+        settingsUsed
+    ){
+        checkMission();
+    }
+
+
+    /*
+       Mission 19.
+    */
+
+    if(
+        mission===19 &&
+        aiUsed &&
+        virusQuarantined
+    ){
+        checkMission();
+    }
+
+
+    /*
+       Mission 20.
+    */
+
+    if(
+        mission===20 &&
+        finalInvestigation
+    ){
+        checkMission();
+    }
 
 },1000);
+
+
+/* -----------------------------
+   INITIAL UI
+----------------------------- */
+
+updateMissionUI();
 
 </script>
 
