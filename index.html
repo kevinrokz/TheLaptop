@@ -2127,11 +2127,16 @@ function browserSearch(){
 
 const q=
 document.getElementById("address").value
-.toLowerCase();
+.toLowerCase()
+.trim();
 
 const page=document.getElementById("browserPage");
 
+let usefulClue=false;
+
 if(q.includes("charger")){
+
+usefulClue=true;
 
 page.innerHTML=`
 <h1>🔎 Search Results</h1>
@@ -2147,6 +2152,8 @@ cabinet or charging area.
 `;
 
 }else if(q.includes("virus")){
+
+usefulClue=true;
 
 page.innerHTML=`
 <h1>🛡️ Security Search</h1>
@@ -2172,6 +2179,13 @@ Try searching for "charger" or "virus".
 </p>
 `;
 
+}
+
+/* MISSION 11 COMPLETE */
+if(mission===11 && usefulClue){
+    mission=12;
+    updateMission();
+    notify("✅ Mission 11 complete! Next mission unlocked.");
 }
 
 batteryDrain(2);
