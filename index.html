@@ -1253,6 +1253,10 @@ id="notesArea"
 oninput="saveNotes()"
 placeholder="Write your clues here..."></textarea>
 
+<div style="margin-top:16px;text-align:right">
+<button class="bigButton" onclick="finishNotesMission()">OK</button>
+</div>
+
 </div>
 </div>
 
@@ -2340,6 +2344,30 @@ localStorage.setItem(
 "theLaptopNotes",
 document.getElementById("notesArea").value
 );
+
+}
+
+function finishNotesMission(){
+
+const area=document.getElementById("notesArea");
+const text=area ? area.value.trim() : "";
+
+if(!text){
+    notify("✍️ Write something in your mission notes first.");
+    if(area) area.focus();
+    return;
+}
+
+if(mission===10){
+    mission=11;
+    updateMission();
+    notify("✅ Mission 10 complete! Next: use the Browser and search for a useful clue.");
+}else{
+    notify("✅ Notes saved.");
+}
+
+saveGame();
+closeApp("notes");
 
 }
 
