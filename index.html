@@ -781,6 +781,52 @@ background:#1976d2;
 color:white;
 }
 
+
+
+/* ================= CHAMPION END SCREEN ================= */
+#championScreen{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.88);
+    z-index:2000;
+}
+.championBox{
+    width:min(760px,90vw);
+    padding:55px 30px;
+    text-align:center;
+    border:2px solid #36c8ff;
+    border-radius:18px;
+    background:linear-gradient(145deg,#10243c,#07111f);
+    box-shadow:0 0 80px rgba(54,200,255,.28),0 25px 80px #000;
+}
+.championTitle{
+    font-size:clamp(55px,10vw,110px);
+    font-weight:900;
+    letter-spacing:7px;
+    margin-bottom:12px;
+}
+.championSubtitle{
+    font-size:clamp(26px,5vw,48px);
+    font-weight:800;
+    margin-bottom:18px;
+}
+.championText{
+    color:#b9d2e8;
+    font-size:18px;
+    margin-bottom:28px;
+}
+.championButton{
+    border:0;
+    border-radius:9px;
+    padding:13px 24px;
+    background:#1677ff;
+    color:#fff;
+    font-weight:700;
+}
+
 /* ================= RESPONSIVE ================= */
 
 @media(max-width:800px){
@@ -1475,6 +1521,22 @@ The laptop has powered off.
 
 </div>
 
+
+
+<!-- CHAMPION END SCREEN -->
+<div id="championScreen">
+    <div class="championBox">
+        <div class="championTitle">CHAMPIAN</div>
+        <div class="championSubtitle">🏆 THE LAPTOP IS YOURS</div>
+        <div class="championText">
+            You completed all 20 missions and finished the terminal finale!
+        </div>
+        <button class="championButton" onclick="location.reload()">
+            PLAY AGAIN
+        </button>
+    </div>
+</div>
+
 <script>
 /* =========================================================
 THE LAPTOP GAME ENGINE
@@ -1529,7 +1591,16 @@ document.getElementById("laptop").style.display="block";
 
 gameStarted=true;
 
-loadGame();
+/* Start a fresh campaign from Mission 1.
+   This prevents an old localStorage save (such as Mission 11)
+   from making a new game appear to start later in the campaign. */
+localStorage.removeItem("theLaptopSave");
+battery=100;
+chargerFound=false;
+virusRemoved=false;
+mission=1;
+
+updateBattery();
 updateMission();
 
 notify("Welcome to THE LAPTOP.");
@@ -1847,21 +1918,32 @@ MISSIONS
 function updateMission(){
 
 if(mission>missions.length){
-
-mission=missions.length;
-
+    document.getElementById("missionName").innerText="🎉 CAMPAIGN COMPLETE";
+    document.getElementById("missionText").innerText="All 20 missions are complete.";
+    document.getElementById("missionProgressBar").style.width="100%";
+    showChampionScreen();
+    return;
 }
 
 const m=missions[mission-1];
 
 document.getElementById("missionName").innerText=
-m.name;
+    m.name;
 
 document.getElementById("missionText").innerText=
-m.text;
+    m.text;
 
 document.getElementById("missionProgressBar").style.width=
-m.progress+"%";
+    m.progress+"%";
+}
+
+
+
+function showChampionScreen(){
+    const screen=document.getElementById("championScreen");
+    if(screen){
+        screen.style.display="flex";
+    }
 }
 
 function completeMission(){
@@ -1992,16 +2074,45 @@ let response="";
 
 if(command==="")return;
 
-if(mission===20 && !finalMissionComplete){
-finalMissionTyped++;
-missions[19].progress=Math.min(100,Math.round(finalMissionTyped*10));
-
-if(finalMissionTyped>=10){
-    finalMissionComplete=true;
-    mission=21;
+/* Mission 12-16 terminal progression */
+if(mission===12 && command==="help"){
+    response="Available commands:\nhelp\nstatus\nbattery\nmission\nclear\ndate\ntime\nai\nscan\nhouse\nopen browser\nopen files";
+    mission=13;
     updateMission();
-    notify("🎉 MISSION 20 COMPLETE! You typed all over the Terminal.");
+    notify("✅ Mission 12 complete! Next: type status.");
+} else if(mission===13 && command==="status"){
+    mission=14;
+    updateMission();
+    notify("✅ Mission 13 complete! Next: type battery.");
+} else if(mission===14 && command==="battery"){
+    mission=15;
+    updateMission();
+    notify("✅ Mission 14 complete! Next: type date.");
+} else if(mission===15 && command==="date"){
+    mission=16;
+    updateMission();
+    notify("✅ Mission 15 complete! Next: type time.");
+} else if(mission===16 && command==="time"){
+    mission=17;
+    updateMission();
+    notify("✅ Mission 16 complete! Next: ask the AI Helper a question.");
 }
+
+if(mission===20 && !finalMissionComplete){
+    if(command === "all over"){
+        finalMissionTyped = 10;
+        finalMissionComplete = true;
+        missions[19].progress = 100;
+        response = "✅ ALL OVER accepted. Mission 20 complete!";
+        mission = 21;
+        updateMission();
+        notify("🎉 MISSION 20 COMPLETE! You typed all over the Terminal.");
+        showChampionScreen();
+    } else {
+        finalMissionTyped++;
+        missions[19].progress = Math.min(90,Math.round(finalMissionTyped*10));
+        response = "✅ Typed. Keep typing. When ready, type: all over";
+    }
 }
 
 if(command==="help"){
@@ -2096,6 +2207,10 @@ response="Opening Browser...";
 openApp("files");
 
 response="Opening File Explorer...";
+
+}else if(command==="all over"){
+
+response="✅ ALL OVER accepted.";
 
 }else{
 
@@ -2232,6 +2347,14 @@ mission=7;
 updateMission();
 
 notify("🤖 AI mission completed.");
+
+}else if(mission===17){
+
+mission=18;
+
+updateMission();
+
+notify("🤖 Mission 17 complete! Open Files again.");
 
 }
 
